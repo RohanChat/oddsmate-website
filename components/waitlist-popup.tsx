@@ -91,7 +91,7 @@ export function WaitlistPopup() {
           </svg>
         </button>
 
-        <div className="text-center mb-3">
+        <div className="text-center mb-1">
           <h2 className="text-[1.4rem] font-bold tracking-[1px] uppercase text-primary max-md:text-[1.3rem]">
             Early Access
           </h2>

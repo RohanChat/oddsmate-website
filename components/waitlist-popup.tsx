@@ -61,7 +61,7 @@ export function WaitlistPopup() {
       {/* Modal card */}
       <div
         ref={containerRef}
-        className="relative z-10 w-full max-w-[520px] mx-4 rounded-3xl p-10 max-md:p-6 animate-in fade-in zoom-in-95 duration-300"
+        className="relative z-10 w-full max-w-[520px] mx-6 rounded-3xl p-10 max-md:p-5 max-md:mx-4 max-md:max-w-[calc(100vw-32px)] animate-in fade-in zoom-in-95 duration-300"
         style={{
           background: "rgba(255, 255, 255, 0.05)",
           border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -92,13 +92,8 @@ export function WaitlistPopup() {
         </button>
 
         <div className="text-center mb-6">
-          <div className="text-[0.75rem] font-bold tracking-[2px] uppercase text-primary mb-3">
+          <h2 className="text-[1.4rem] font-bold tracking-[1px] uppercase text-primary max-md:text-[1.1rem]">
             Early Access
-          </div>
-          <h2 className="text-[1.6rem] font-semibold tracking-[-0.5px] text-foreground leading-[1.2] max-md:text-[1.3rem]">
-            {"Get your edge"}
-            <br />
-            {"before everyone else"}
           </h2>
         </div>
 

@@ -66,12 +66,21 @@ export function FeaturesSection() {
     document.body.style.overflow = "hidden"
   }, [])
 
-  const unlockScroll = useCallback(() => {
+  const unlockScroll = useCallback((dir?: number) => {
     if (!isLockedRef.current) return
     isLockedRef.current = false
     setIsLocked(false)
     scrollAccumulator.current = 0
     document.body.style.overflow = ""
+
+    // Nudge past the features section so the waitlist is reachable
+    if (dir === 1 && sectionRef.current) {
+      const rect = sectionRef.current.getBoundingClientRect()
+      const sectionBottom = window.scrollY + rect.bottom
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: sectionBottom, behavior: "smooth" })
+      })
+    }
   }, [])
 
   const goToFeature = useCallback(
@@ -134,7 +143,7 @@ export function FeaturesSection() {
         if (nextFeature >= 0 && nextFeature < NUM_FEATURES) {
           goToFeature(nextFeature, dir)
         } else {
-          unlockScroll()
+          unlockScroll(dir)
         }
       }
     }
@@ -177,7 +186,7 @@ export function FeaturesSection() {
         if (nextFeature >= 0 && nextFeature < NUM_FEATURES) {
           goToFeature(nextFeature, dir)
         } else {
-          unlockScroll()
+          unlockScroll(dir)
         }
       }
     }
@@ -197,7 +206,7 @@ export function FeaturesSection() {
         if (next < NUM_FEATURES) {
           goToFeature(next, 1)
         } else {
-          unlockScroll()
+          unlockScroll(1)
         }
       } else if (e.key === "ArrowUp") {
         e.preventDefault()
@@ -205,7 +214,7 @@ export function FeaturesSection() {
         if (prev >= 0) {
           goToFeature(prev, -1)
         } else {
-          unlockScroll()
+          unlockScroll(-1)
         }
       }
     }

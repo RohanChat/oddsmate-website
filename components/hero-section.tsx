@@ -10,15 +10,15 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
   return (
     <section
       id="heroSection"
-      className="min-h-screen flex flex-col justify-between pt-[26vh] pb-[6vh] max-md:pt-[24vh] max-md:pb-[4vh]"
+      className="min-h-screen flex flex-col pt-[18vh] pb-[8vh] max-md:pt-[20vh] max-md:pb-[5vh]"
     >
-      {/* Top area: typing animation fills space */}
-      <div className="flex-1 flex flex-col justify-center">
+      {/* Top area: typing animation */}
+      <div className="flex-1 flex flex-col justify-start pt-[4vh] max-md:pt-[2vh] max-md:justify-center">
         <TypingAnimation />
       </div>
 
-      {/* Bottom: copy + CTA, tighter gap on desktop, centered on mobile */}
-      <div className="flex flex-col items-start gap-5 max-md:items-center max-md:gap-5 max-md:text-center">
+      {/* Bottom: copy + CTA, tight below typing, centered everywhere */}
+      <div className="flex flex-col items-center text-center gap-4 max-md:gap-4 mt-2">
         <div className="max-w-[600px]">
           <p className="text-[1.3rem] leading-relaxed text-muted-foreground font-normal max-md:text-[1rem]">
             Your AI mate to help you start winning in prediction markets.

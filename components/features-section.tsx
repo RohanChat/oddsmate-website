@@ -79,13 +79,21 @@ export function FeaturesSection() {
     scrollAccumulator.current = 0
     document.body.style.overflow = ""
 
-    // Nudge past the features section so the waitlist is reachable
-    if (dir === 1 && sectionRef.current) {
+    if (sectionRef.current) {
       const rect = sectionRef.current.getBoundingClientRect()
-      const sectionBottom = window.scrollY + rect.bottom
-      requestAnimationFrame(() => {
-        window.scrollTo({ top: sectionBottom, behavior: "smooth" })
-      })
+      if (dir === 1) {
+        // Scrolling down past last feature - nudge past section
+        const sectionBottom = window.scrollY + rect.bottom
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: sectionBottom, behavior: "smooth" })
+        })
+      } else if (dir === -1) {
+        // Scrolling up past first feature - nudge above section
+        const sectionTop = window.scrollY + rect.top - 100
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: Math.max(0, sectionTop), behavior: "smooth" })
+        })
+      }
     }
   }, [])
 
@@ -121,21 +129,35 @@ export function FeaturesSection() {
       const isMobileView = window.innerWidth < 768
       const topThreshold = isMobileView ? 150 : 60
       const bottomThreshold = isMobileView ? -150 : -60
-      return (
-        movingDown &&
-        rect.top <= topThreshold &&
-        rect.top > bottomThreshold &&
-        rect.bottom > window.innerHeight * 0.5
-      )
+
+      // Lock when scrolling DOWN into the section (entering from above)
+      if (movingDown && rect.top <= topThreshold && rect.top > bottomThreshold && rect.bottom > window.innerHeight * 0.5) {
+        return "down"
+      }
+
+      // Lock when scrolling UP into the section (entering from below)
+      if (!movingDown && rect.bottom >= window.innerHeight * 0.5 && rect.top < window.innerHeight * 0.3 && rect.top > bottomThreshold) {
+        return "up"
+      }
+
+      return null
     }
 
     function handleWheel(e: WheelEvent) {
       if (!isLockedRef.current) {
         const rect = sectionRef.current?.getBoundingClientRect()
-        if (rect && shouldLock(rect, e.deltaY > 0)) {
-          e.preventDefault()
-          lockScroll()
-          return
+        if (rect) {
+          const lockDir = shouldLock(rect, e.deltaY > 0)
+          if (lockDir) {
+            e.preventDefault()
+            // If entering from below (scrolling up), start at last feature
+            if (lockDir === "up" && currentFeatureRef.current === 0) {
+              currentFeatureRef.current = NUM_FEATURES - 1
+              setCurrentFeature(NUM_FEATURES - 1)
+            }
+            lockScroll()
+            return
+          }
         }
         return
       }
@@ -168,7 +190,7 @@ export function FeaturesSection() {
       touchActive = true
       touchLocked = false
 
-      // Proactively lock if the section is already in view
+      // Proactively lock if the section is already snapped in view
       if (!isLockedRef.current) {
         const rect = sectionRef.current?.getBoundingClientRect()
         if (rect && rect.top <= 10 && rect.top > -10 && rect.bottom > window.innerHeight * 0.5) {
@@ -177,6 +199,10 @@ export function FeaturesSection() {
           lockScroll()
           scrollAccumulator.current = 0
         }
+      }
+      // If already locked, prevent default immediately
+      if (isLockedRef.current) {
+        e.preventDefault()
       }
     }
 
@@ -190,12 +216,20 @@ export function FeaturesSection() {
 
       if (!isLockedRef.current) {
         const rect = sectionRef.current?.getBoundingClientRect()
-        if (rect && shouldLock(rect, totalDelta > 0)) {
-          e.preventDefault()
-          touchLocked = true
-          lockScroll()
-          scrollAccumulator.current = 0
-          return
+        if (rect) {
+          const lockDir = shouldLock(rect, totalDelta > 0)
+          if (lockDir) {
+            e.preventDefault()
+            touchLocked = true
+            // If entering from below (scrolling up), start at last feature
+            if (lockDir === "up" && currentFeatureRef.current === 0) {
+              currentFeatureRef.current = NUM_FEATURES - 1
+              setCurrentFeature(NUM_FEATURES - 1)
+            }
+            lockScroll()
+            scrollAccumulator.current = 0
+            return
+          }
         }
         return
       }

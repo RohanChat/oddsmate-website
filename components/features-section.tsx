@@ -34,7 +34,7 @@ const features = [
 
 const NUM_FEATURES = 4
 const SCROLL_PX_PER_FEATURE = 160
-const TOUCH_PX_PER_FEATURE = 80
+const TOUCH_PX_PER_FEATURE = 40
 const TRANSITION_MS = 550
 
 export function FeaturesSection() {
@@ -118,10 +118,13 @@ export function FeaturesSection() {
 
   useEffect(() => {
     function shouldLock(rect: DOMRect, movingDown: boolean) {
+      const isMobileView = window.innerWidth < 768
+      const topThreshold = isMobileView ? 150 : 60
+      const bottomThreshold = isMobileView ? -150 : -60
       return (
         movingDown &&
-        rect.top <= 60 &&
-        rect.top > -60 &&
+        rect.top <= topThreshold &&
+        rect.top > bottomThreshold &&
         rect.bottom > window.innerHeight * 0.5
       )
     }
@@ -261,7 +264,7 @@ export function FeaturesSection() {
         {/* Text Stack */}
         <div className={cn(
           "relative flex-1 h-[400px]",
-          "max-md:h-auto max-md:w-full max-md:flex-none max-md:min-h-[180px]"
+          "max-md:h-auto max-md:w-full max-md:flex-none max-md:min-h-[180px] max-md:mt-4"
         )}>
           {features.map((feature, idx) => (
             <div

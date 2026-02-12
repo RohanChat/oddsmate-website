@@ -10,24 +10,25 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
   return (
     <section
       id="heroSection"
-      className="min-h-screen flex flex-col pt-[24vh] pb-[8vh] max-md:pt-[16vh] max-md:pb-[5vh]"
+      className="min-h-screen flex flex-col pt-[10vh] pb-[6vh] max-md:pt-[12vh] max-md:pb-[4vh]"
     >
-      {/* Typing animation */}
-      <div className="max-md:mt-0">
-        <TypingAnimation />
-      </div>
-
-      {/* Copy text - left-aligned, tight below typing */}
-      <div className="mt-3 max-w-[600px] max-md:mt-2">
-        <p className="text-[1.3rem] leading-relaxed text-muted-foreground font-normal text-left max-md:text-[1rem]">
-          Your AI mate to help you start winning in prediction markets.
-        </p>
-      </div>
-
-      {/* Spacer */}
+      {/* Top spacer - pushes content to vertical center between logo and button */}
       <div className="flex-1" />
 
-      {/* CTA button - centered */}
+      {/* Typing animation + copy, vertically centered */}
+      <div>
+        <TypingAnimation />
+        <div className="mt-3 max-w-[600px] max-md:mt-2">
+          <p className="text-[1.3rem] leading-relaxed text-muted-foreground font-normal text-left max-md:text-[1rem]">
+            Your AI mate to help you start winning in prediction markets.
+          </p>
+        </div>
+      </div>
+
+      {/* Bottom spacer - equal to top, keeps content centered */}
+      <div className="flex-1" />
+
+      {/* CTA button - centered, anchored to bottom */}
       <div className="flex justify-center">
         <button
           onClick={onCtaClick}

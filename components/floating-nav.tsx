@@ -46,26 +46,23 @@ export function FloatingNav() {
   const isHero = !scrolled
 
   function openViralLoopsPopup() {
-    // Try to open the Viral Loops popup form
     const popup = document.querySelector('form-widget[mode="popup"]') as HTMLElement | null
-    if (popup && typeof (popup as any).open === "function") {
-      ;(popup as any).open()
-    } else {
-      // Fallback: scroll to the waitlist section
-      document.body.style.overflow = ""
-      setTimeout(() => {
-        document
-          .getElementById("waitlistSection")
-          ?.scrollIntoView({ behavior: "smooth" })
-      }, 50)
+    if (popup) {
+      popup.click()
     }
+    document.body.style.overflow = ""
+    setTimeout(() => {
+      document
+        .getElementById("waitlistSection")
+        ?.scrollIntoView({ behavior: "smooth" })
+    }, 50)
   }
 
   // --- Logo sizing ---
   // Hero: large overlay logo (desktop 420px, mobile 280px)
   // Scrolled desktop: full logo at 180px
   // Scrolled mobile: icon at 44px
-  const heroLogoWidth = isMobile ? 280 : 420
+  const heroLogoWidth = isMobile ? 180 : 280
   const scrolledLogoWidth = isMobile ? 44 : 180
   const logoWidth = heroLogoWidth - scrollProgress * (heroLogoWidth - scrolledLogoWidth)
   // Aspect ratios differ by logo

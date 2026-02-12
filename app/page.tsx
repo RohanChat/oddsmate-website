@@ -7,20 +7,20 @@ import { FeaturesSection } from "@/components/features-section"
 import { WaitlistSection } from "@/components/waitlist-section"
 
 function openViralLoopsPopup() {
+  // Try clicking the Viral Loops popup widget to open it
   const popup = document.querySelector(
     'form-widget[mode="popup"]'
   ) as HTMLElement | null
-  if (popup && typeof (popup as any).open === "function") {
-    ;(popup as any).open()
-  } else {
-    // Fallback: scroll to waitlist embed
-    document.body.style.overflow = ""
-    setTimeout(() => {
-      document
-        .getElementById("waitlistSection")
-        ?.scrollIntoView({ behavior: "smooth" })
-    }, 50)
+  if (popup) {
+    popup.click()
   }
+  // Also fallback: scroll to waitlist embed
+  document.body.style.overflow = ""
+  setTimeout(() => {
+    document
+      .getElementById("waitlistSection")
+      ?.scrollIntoView({ behavior: "smooth" })
+  }, 50)
 }
 
 export default function Page() {
@@ -38,6 +38,13 @@ export default function Page() {
           <div>&copy; 2025 ODDS/MATE INTELLIGENCE</div>
         </footer>
       </div>
+
+      {/* Viral Loops Popup - always in DOM for Get Access buttons */}
+      <div
+        dangerouslySetInnerHTML={{
+          __html: `<form-widget mode="popup" ucid="ArwbyWM6Vu8sn8nmtKOoxV1swp4"></form-widget>`,
+        }}
+      />
     </>
   )
 }

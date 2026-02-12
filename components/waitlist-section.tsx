@@ -38,12 +38,7 @@ export function WaitlistSection() {
         </div>
       </div>
 
-      {/* Viral Loops Popup Form (triggered by Get Access buttons) */}
-      <div
-        dangerouslySetInnerHTML={{
-          __html: `<form-widget mode="popup" ucid="ArwbyWM6Vu8sn8nmtKOoxV1swp4"></form-widget>`,
-        }}
-      />
+
     </section>
   )
 }

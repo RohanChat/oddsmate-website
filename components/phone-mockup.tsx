@@ -30,7 +30,7 @@ const screens = [
     messages: [
       {
         type: "ai",
-        text: 'INSIDER ALERT🚨: $250k just hit YES on "Fed cuts rates in March"',
+        text: '🚨 WHALE ALERT: $250k just hit YES on "Fed cuts rates in March"',
       },
       { type: "ai", text: "Line moved from 62% to 68% in 3 minutes" },
       {
@@ -44,7 +44,7 @@ const screens = [
       },
       {
         type: "ai",
-        text: "This is a suspected INSIDER. Your position is up 12%.",
+        text: "This is a suspected insider trade. Your position is up 12%.",
       },
     ],
   },

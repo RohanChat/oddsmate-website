@@ -108,8 +108,14 @@ export function FeaturesSection() {
                 <span className="font-black">{feature.number.split(" / ")[0]} /</span>{" "}
                 <span className="font-semibold">{feature.number.split(" / ")[1]}</span>
               </div>
-              <h2 className="text-[clamp(2.2rem,3.5vw,3.5rem)] leading-[1.05] tracking-[-1.5px] font-bold text-foreground mb-4 whitespace-pre-line max-md:text-[1.6rem] max-md:mb-2 max-md:leading-[1.1]">
-                {feature.title}
+              <h2 className="text-[clamp(2.2rem,3.5vw,3.5rem)] leading-[1.05] tracking-[-1.5px] font-bold text-foreground mb-4 max-md:text-[1.6rem] max-md:mb-2 max-md:leading-[1.1]">
+                {feature.title.split("\n").map((line, i, arr) => (
+                  <span key={i}>
+                    {line}
+                    {i < arr.length - 1 && <br className="max-md:hidden" />}
+                    {i < arr.length - 1 && <span className="md:hidden"> </span>}
+                  </span>
+                ))}
               </h2>
               <p className="text-[1.05rem] leading-relaxed text-muted-foreground font-normal max-w-[440px] max-md:text-[0.85rem] max-md:leading-normal">
                 {feature.description}

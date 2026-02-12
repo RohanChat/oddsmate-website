@@ -92,7 +92,7 @@ export function WaitlistPopup() {
         </button>
 
         <div className="text-center mb-6">
-          <h2 className="text-[1.4rem] font-bold tracking-[1px] uppercase text-primary max-md:text-[1.1rem]">
+          <h2 className="text-[1.4rem] font-bold tracking-[1px] uppercase text-primary max-md:text-[1.3rem]">
             Early Access
           </h2>
         </div>

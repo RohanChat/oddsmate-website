@@ -47,8 +47,7 @@ export function TypingAnimation() {
 
   return (
     <div
-      className="text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.15] font-medium tracking-[-0.04em]"
-      style={{ height: "3.5em", overflow: "hidden" }}
+      className="text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.15] font-medium tracking-[-0.04em] min-h-[3.5em] max-md:min-h-0"
     >
       <span className="text-primary/55">{"Hi mate, "}</span>
       <span className="text-foreground">{displayText}</span>

@@ -158,35 +158,55 @@ export function FeaturesSection() {
     }
 
     let touchStartY = 0
+    let touchPrevY = 0
     let touchActive = false
+    let touchLocked = false
 
     function handleTouchStart(e: TouchEvent) {
       touchStartY = e.touches[0].clientY
+      touchPrevY = touchStartY
       touchActive = true
+      touchLocked = false
+
+      // Proactively lock if the section is already in view
+      if (!isLockedRef.current) {
+        const rect = sectionRef.current?.getBoundingClientRect()
+        if (rect && rect.top <= 10 && rect.top > -10 && rect.bottom > window.innerHeight * 0.5) {
+          e.preventDefault()
+          touchLocked = true
+          lockScroll()
+          scrollAccumulator.current = 0
+        }
+      }
     }
 
     function handleTouchMove(e: TouchEvent) {
       if (!touchActive) return
 
       const currentY = e.touches[0].clientY
-      const deltaY = touchStartY - currentY
+      const totalDelta = touchStartY - currentY
+      const incrementalDelta = touchPrevY - currentY
+      touchPrevY = currentY
 
       if (!isLockedRef.current) {
         const rect = sectionRef.current?.getBoundingClientRect()
-        if (rect && shouldLock(rect, deltaY > 0)) {
+        if (rect && shouldLock(rect, totalDelta > 0)) {
           e.preventDefault()
+          touchLocked = true
           lockScroll()
-          touchStartY = currentY
+          scrollAccumulator.current = 0
           return
         }
         return
       }
 
+      // Always prevent default while locked to stop page scroll
       e.preventDefault()
+      touchLocked = true
+
       if (isTransitioningRef.current) return
 
-      scrollAccumulator.current += deltaY
-      touchStartY = currentY
+      scrollAccumulator.current += incrementalDelta
 
       if (Math.abs(scrollAccumulator.current) >= TOUCH_PX_PER_FEATURE) {
         const dir = scrollAccumulator.current > 0 ? 1 : -1
@@ -196,13 +216,17 @@ export function FeaturesSection() {
           goToFeature(nextFeature, dir)
         } else {
           unlockScroll(dir)
+          touchLocked = false
         }
       }
     }
 
     function handleTouchEnd() {
       touchActive = false
-      scrollAccumulator.current = 0
+      touchLocked = false
+      if (isLockedRef.current) {
+        scrollAccumulator.current = 0
+      }
     }
 
     function handleKeyDown(e: KeyboardEvent) {
@@ -229,7 +253,7 @@ export function FeaturesSection() {
     }
 
     window.addEventListener("wheel", handleWheel, { passive: false })
-    window.addEventListener("touchstart", handleTouchStart, { passive: true })
+    window.addEventListener("touchstart", handleTouchStart, { passive: false })
     window.addEventListener("touchmove", handleTouchMove, { passive: false })
     window.addEventListener("touchend", handleTouchEnd, { passive: true })
     window.addEventListener("keydown", handleKeyDown)

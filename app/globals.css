@@ -77,4 +77,16 @@
   animation: popupFadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+/* Force Viral Loops widget to fit container */
+form-widget {
+  display: block;
+  max-width: 100% !important;
+  width: 100% !important;
+  overflow: hidden;
+}
+form-widget * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
 

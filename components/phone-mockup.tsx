@@ -16,7 +16,7 @@ const screens = [
           { label: "FanDuel", value: "-145", variant: "up" as const },
           { label: "DraftKings", value: "-150", variant: "neutral" as const },
           { label: "BetMGM", value: "-148", variant: "neutral" as const },
-          { label: "Caesars", value: "-152", variant: "neutral" as const },
+          { label: "Kalshi", value: "-152", variant: "neutral" as const },
         ],
       },
       {
@@ -30,7 +30,7 @@ const screens = [
     messages: [
       {
         type: "ai",
-        text: 'ALERT: $250k just hit YES on "Fed cuts rates in March"',
+        text: '🚨 WHALE ALERT: $250k just hit YES on "Fed cuts rates in March"',
       },
       { type: "ai", text: "Line moved from 62% to 68% in 3 minutes" },
       {
@@ -44,7 +44,7 @@ const screens = [
       },
       {
         type: "ai",
-        text: "This looks like informed flow. Your watchlist position is up 12%.",
+        text: "This is a suspected insider trade. Your position is up 12%.",
       },
     ],
   },

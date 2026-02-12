@@ -13,7 +13,7 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
       className="min-h-screen flex flex-col pt-[10vh] pb-[6vh] max-md:pt-[12vh] max-md:pb-[4vh]"
     >
       {/* Top spacer - pushes content to vertical center between logo and button */}
-      <div className="flex-1 max-md:flex-[0.6]" />
+      <div className="flex-1 max-md:flex-[0.35]" />
 
       {/* Typing animation + copy, vertically centered */}
       <div>

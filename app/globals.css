@@ -61,4 +61,20 @@
   animation: blink 1s step-end infinite;
 }
 
+/* Popup entrance */
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-in {
+  animation: popupFadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 

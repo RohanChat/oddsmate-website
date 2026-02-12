@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, useCallback } from "react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 
@@ -45,33 +45,27 @@ export function FloatingNav() {
   const scrolled = scrollProgress > 0.3
   const isHero = !scrolled
 
-  function openViralLoopsPopup() {
-    const popup = document.querySelector('form-widget[mode="popup"]') as HTMLElement | null
-    if (popup) {
-      popup.click()
-    }
-    document.body.style.overflow = ""
-    setTimeout(() => {
-      document
-        .getElementById("waitlistSection")
-        ?.scrollIntoView({ behavior: "smooth" })
-    }, 50)
-  }
+  const openPopup = useCallback(() => {
+    // Dispatch a custom event that the popup component listens for
+    window.dispatchEvent(new CustomEvent("oddsmate:open-popup"))
+  }, [])
 
   // --- Logo sizing ---
-  // Hero: large overlay logo (desktop 420px, mobile 280px)
-  // Scrolled desktop: full logo at 180px
-  // Scrolled mobile: icon at 44px
-  const heroLogoWidth = isMobile ? 180 : 280
-  const scrolledLogoWidth = isMobile ? 44 : 180
-  const logoWidth = heroLogoWidth - scrollProgress * (heroLogoWidth - scrolledLogoWidth)
-  // Aspect ratios differ by logo
-  const heroAspect = 0.55 // overlay logo is more square-ish (wider with height)
-  const scrolledAspect = isMobile ? 1 : 0.22 // icon is 1:1, full logo is wide
+  // Hero: overlay logo, slightly smaller than before
+  // Desktop: 240px hero -> 180px scrolled (full logo)
+  // Mobile: 150px hero -> 48px scrolled (icon)
+  const heroLogoWidth = isMobile ? 150 : 240
+  const scrolledLogoWidth = isMobile ? 48 : 180
+  const logoWidth =
+    heroLogoWidth - scrollProgress * (heroLogoWidth - scrolledLogoWidth)
+
+  // Aspect ratios: overlay ~0.55, full logo ~0.22, icon ~1
+  const heroAspect = 0.55
+  const scrolledAspect = isMobile ? 1 : 0.22
   const aspect = heroAspect - scrollProgress * (heroAspect - scrolledAspect)
   const logoHeight = logoWidth * aspect
 
-  // Determine which logo to show based on scroll + device
+  // Which logo image to show
   const heroLogo = "/images/oddsmate-logo-overlay.png"
   const scrolledDesktopLogo = "/images/oddsmate-logo.png"
   const scrolledMobileLogo = "/images/oddsmate-icon.png"
@@ -82,16 +76,13 @@ export function FloatingNav() {
       ? scrolledMobileLogo
       : scrolledDesktopLogo
 
-  // Nav vertical padding
   const navPy = scrolled ? 10 : 32 - scrollProgress * 22
 
   return (
     <nav
       className={cn(
         "fixed top-0 left-0 right-0 z-[200] flex items-center transition-all duration-500",
-        scrolled
-          ? "justify-between"
-          : "justify-center"
+        scrolled ? "justify-between" : "justify-center"
       )}
       style={{
         padding: `${navPy}px clamp(16px, 4vw, 40px)`,
@@ -130,14 +121,14 @@ export function FloatingNav() {
 
       {/* CTA button */}
       <button
-        onClick={openViralLoopsPopup}
+        onClick={openPopup}
         className={cn(
           "font-sans tracking-[0.06em] uppercase cursor-pointer transition-all duration-500 rounded-full border font-bold whitespace-nowrap",
           scrolled
             ? cn(
                 "opacity-100 translate-x-0 pointer-events-auto bg-primary/20 border-primary/50 text-foreground hover:bg-primary/30 hover:border-primary/60 hover:shadow-[0_0_24px_rgba(156,132,163,0.35)]",
                 isMobile
-                  ? "text-[0.7rem] px-4 py-2"
+                  ? "text-[0.65rem] px-3.5 py-1.5"
                   : "text-[0.85rem] px-7 py-2.5"
               )
             : "opacity-0 translate-x-2.5 pointer-events-none absolute right-10 max-md:right-4 text-[0.85rem] px-7 py-2.5 bg-transparent border-transparent text-foreground"

@@ -5,22 +5,10 @@ import { FloatingNav } from "@/components/floating-nav"
 import { HeroSection } from "@/components/hero-section"
 import { FeaturesSection } from "@/components/features-section"
 import { WaitlistSection } from "@/components/waitlist-section"
+import { WaitlistPopup } from "@/components/waitlist-popup"
 
-function openViralLoopsPopup() {
-  // Try clicking the Viral Loops popup widget to open it
-  const popup = document.querySelector(
-    'form-widget[mode="popup"]'
-  ) as HTMLElement | null
-  if (popup) {
-    popup.click()
-  }
-  // Also fallback: scroll to waitlist embed
-  document.body.style.overflow = ""
-  setTimeout(() => {
-    document
-      .getElementById("waitlistSection")
-      ?.scrollIntoView({ behavior: "smooth" })
-  }, 50)
+function openPopup() {
+  window.dispatchEvent(new CustomEvent("oddsmate:open-popup"))
 }
 
 export default function Page() {
@@ -30,7 +18,7 @@ export default function Page() {
       <FloatingNav />
 
       <div className="relative z-[1] w-full max-w-[1200px] mx-auto px-10 max-md:px-5">
-        <HeroSection onCtaClick={openViralLoopsPopup} />
+        <HeroSection onCtaClick={openPopup} />
         <FeaturesSection />
         <WaitlistSection />
 
@@ -39,12 +27,8 @@ export default function Page() {
         </footer>
       </div>
 
-      {/* Viral Loops Popup - always in DOM for Get Access buttons */}
-      <div
-        dangerouslySetInnerHTML={{
-          __html: `<form-widget mode="popup" ucid="ArwbyWM6Vu8sn8nmtKOoxV1swp4"></form-widget>`,
-        }}
-      />
+      {/* Custom popup overlay with liquid glass */}
+      <WaitlistPopup />
     </>
   )
 }

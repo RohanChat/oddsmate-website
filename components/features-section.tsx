@@ -270,10 +270,10 @@ export function FeaturesSection() {
                       : "translateY(30px)",
               }}
             >
-              <div className="text-[1.05rem] text-primary font-extrabold tracking-[2.5px] uppercase mb-4 max-md:text-[0.85rem] max-md:mb-2 max-md:tracking-[2px]">
+              <div className="text-[1.1rem] text-primary font-black tracking-[2.5px] uppercase mb-4 max-md:text-[0.9rem] max-md:mb-2 max-md:tracking-[2px]">
                 {feature.number}
               </div>
-              <h2 className="text-[clamp(2.2rem,3.5vw,3.5rem)] leading-[1.05] tracking-[-1.5px] font-semibold text-foreground mb-4 whitespace-pre-line max-md:text-[1.6rem] max-md:mb-2 max-md:leading-[1.1]">
+              <h2 className="text-[clamp(2.2rem,3.5vw,3.5rem)] leading-[1.05] tracking-[-1.5px] font-bold text-foreground mb-4 whitespace-pre-line max-md:text-[1.6rem] max-md:mb-2 max-md:leading-[1.1]">
                 {feature.title}
               </h2>
               <p className="text-[1.05rem] leading-relaxed text-muted-foreground font-normal max-w-[440px] max-md:text-[0.85rem] max-md:leading-normal">

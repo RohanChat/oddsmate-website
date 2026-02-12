@@ -91,7 +91,7 @@ export function PhoneMockup({ activeScreen }: PhoneMockupProps) {
   return (
     <div className="flex justify-center items-center relative">
       <div
-        className="w-[360px] h-[660px] flex flex-col overflow-hidden relative max-md:w-[280px] max-md:h-[520px]"
+        className="w-[360px] h-[660px] flex flex-col overflow-hidden relative max-md:w-[260px] max-md:h-[460px]"
         style={{
           background: "rgba(255,255,255,0.04)",
           backdropFilter: "blur(20px)",

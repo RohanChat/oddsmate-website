@@ -27,12 +27,11 @@ const features = [
 ]
 
 const NUM_FEATURES = 3
-const SCROLL_THRESHOLD = 120
+const SCROLL_PX_PER_FEATURE = 150
 
 export function FeaturesSection() {
   const [currentFeature, setCurrentFeature] = useState(0)
   const [isLocked, setIsLocked] = useState(false)
-  const [isTransitioning, setIsTransitioning] = useState(false)
   const [prevFeature, setPrevFeature] = useState<number | null>(null)
   const [direction, setDirection] = useState(1)
   const sectionRef = useRef<HTMLElement>(null)
@@ -40,24 +39,28 @@ export function FeaturesSection() {
   const isLockedRef = useRef(false)
   const isTransitioningRef = useRef(false)
   const currentFeatureRef = useRef(0)
+  const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const lockScroll = useCallback(() => {
     if (isLockedRef.current) return
     isLockedRef.current = true
     setIsLocked(true)
+    scrollAccumulator.current = 0
 
+    // Snap section to viewport top
     const rect = sectionRef.current?.getBoundingClientRect()
     if (rect && Math.abs(rect.top) > 2) {
       window.scrollTo({ top: window.scrollY + rect.top, behavior: "auto" })
     }
-    document.body.classList.add("scroll-locked")
+    document.body.style.overflow = "hidden"
   }, [])
 
   const unlockScroll = useCallback(() => {
     if (!isLockedRef.current) return
     isLockedRef.current = false
     setIsLocked(false)
-    document.body.classList.remove("scroll-locked")
+    scrollAccumulator.current = 0
+    document.body.style.overflow = ""
   }, [])
 
   const goToFeature = useCallback(
@@ -71,129 +74,174 @@ export function FeaturesSection() {
       if (isTransitioningRef.current) return
 
       isTransitioningRef.current = true
-      setIsTransitioning(true)
       setPrevFeature(currentFeatureRef.current)
       setDirection(dir)
       currentFeatureRef.current = index
       setCurrentFeature(index)
+      scrollAccumulator.current = 0
 
-      setTimeout(() => {
+      if (transitionTimer.current) clearTimeout(transitionTimer.current)
+      transitionTimer.current = setTimeout(() => {
         isTransitioningRef.current = false
-        setIsTransitioning(false)
         setPrevFeature(null)
         scrollAccumulator.current = 0
-      }, 600)
+      }, 500)
     },
     []
   )
 
   useEffect(() => {
-    function checkShouldLock() {
-      if (isLockedRef.current) return
-      const rect = sectionRef.current?.getBoundingClientRect()
-      if (!rect) return
-      if (
-        rect.top <= 80 &&
-        rect.top >= -20 &&
-        rect.bottom > window.innerHeight * 0.5
-      ) {
-        lockScroll()
-      }
-    }
-
-    function handleScroll() {
-      checkShouldLock()
-    }
-
     function handleWheel(e: WheelEvent) {
-      if (isLockedRef.current) {
-        e.preventDefault()
-        if (isTransitioningRef.current) return
-
-        scrollAccumulator.current += e.deltaY
-
-        if (Math.abs(scrollAccumulator.current) >= SCROLL_THRESHOLD) {
-          const dir = scrollAccumulator.current > 0 ? 1 : -1
-          const nextFeature = currentFeatureRef.current + dir
-
-          if (nextFeature >= 0 && nextFeature < NUM_FEATURES) {
-            goToFeature(nextFeature, dir)
-          } else {
-            unlockScroll()
-            scrollAccumulator.current = 0
-          }
-        }
-        return
-      }
-
-      if (e.deltaY > 0) {
+      if (!isLockedRef.current) {
+        // Check if we should lock
         const rect = sectionRef.current?.getBoundingClientRect()
         if (
           rect &&
-          rect.top <= 150 &&
-          rect.top > -20 &&
+          e.deltaY > 0 &&
+          rect.top <= 100 &&
+          rect.top > -40 &&
           rect.bottom > window.innerHeight * 0.5
         ) {
           e.preventDefault()
           lockScroll()
+          return
+        }
+        return
+      }
+
+      // We're locked
+      e.preventDefault()
+      if (isTransitioningRef.current) return
+
+      scrollAccumulator.current += e.deltaY
+
+      if (Math.abs(scrollAccumulator.current) >= SCROLL_PX_PER_FEATURE) {
+        const dir = scrollAccumulator.current > 0 ? 1 : -1
+        const nextFeature = currentFeatureRef.current + dir
+
+        if (nextFeature >= 0 && nextFeature < NUM_FEATURES) {
+          goToFeature(nextFeature, dir)
+        } else {
+          unlockScroll()
         }
       }
     }
 
     let touchStartY = 0
+    let touchActive = false
+
     function handleTouchStart(e: TouchEvent) {
       touchStartY = e.touches[0].clientY
+      touchActive = true
     }
 
     function handleTouchMove(e: TouchEvent) {
-      if (!isLockedRef.current) return
+      if (!touchActive) return
+
+      const currentY = e.touches[0].clientY
+      const deltaY = touchStartY - currentY
+
+      if (!isLockedRef.current) {
+        const rect = sectionRef.current?.getBoundingClientRect()
+        if (
+          rect &&
+          deltaY > 0 &&
+          rect.top <= 100 &&
+          rect.top > -40 &&
+          rect.bottom > window.innerHeight * 0.5
+        ) {
+          e.preventDefault()
+          lockScroll()
+          touchStartY = currentY
+          return
+        }
+        return
+      }
+
       e.preventDefault()
       if (isTransitioningRef.current) return
 
-      const deltaY = touchStartY - e.touches[0].clientY
-      touchStartY = e.touches[0].clientY
       scrollAccumulator.current += deltaY
+      touchStartY = currentY
 
-      if (Math.abs(scrollAccumulator.current) >= SCROLL_THRESHOLD) {
+      if (Math.abs(scrollAccumulator.current) >= SCROLL_PX_PER_FEATURE * 0.6) {
         const dir = scrollAccumulator.current > 0 ? 1 : -1
         const nextFeature = currentFeatureRef.current + dir
+
         if (nextFeature >= 0 && nextFeature < NUM_FEATURES) {
           goToFeature(nextFeature, dir)
         } else {
           unlockScroll()
-          scrollAccumulator.current = 0
         }
       }
     }
 
-    window.addEventListener("scroll", handleScroll, { passive: true })
+    function handleTouchEnd() {
+      touchActive = false
+      scrollAccumulator.current = 0
+    }
+
+    // Also handle keyboard
+    function handleKeyDown(e: KeyboardEvent) {
+      if (!isLockedRef.current) return
+      if (isTransitioningRef.current) return
+
+      if (e.key === "ArrowDown" || e.key === " ") {
+        e.preventDefault()
+        const next = currentFeatureRef.current + 1
+        if (next < NUM_FEATURES) {
+          goToFeature(next, 1)
+        } else {
+          unlockScroll()
+        }
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault()
+        const prev = currentFeatureRef.current - 1
+        if (prev >= 0) {
+          goToFeature(prev, -1)
+        } else {
+          unlockScroll()
+        }
+      }
+    }
+
     window.addEventListener("wheel", handleWheel, { passive: false })
     window.addEventListener("touchstart", handleTouchStart, { passive: true })
     window.addEventListener("touchmove", handleTouchMove, { passive: false })
+    window.addEventListener("touchend", handleTouchEnd, { passive: true })
+    window.addEventListener("keydown", handleKeyDown)
 
     return () => {
-      window.removeEventListener("scroll", handleScroll)
       window.removeEventListener("wheel", handleWheel)
       window.removeEventListener("touchstart", handleTouchStart)
       window.removeEventListener("touchmove", handleTouchMove)
+      window.removeEventListener("touchend", handleTouchEnd)
+      window.removeEventListener("keydown", handleKeyDown)
+      if (transitionTimer.current) clearTimeout(transitionTimer.current)
     }
   }, [lockScroll, unlockScroll, goToFeature])
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [])
 
   return (
     <>
       <section
         ref={sectionRef}
         id="featuresSection"
-        className="min-h-screen grid items-center gap-[60px] max-md:grid-cols-1 max-md:gap-[30px] max-md:py-10"
-        style={{ gridTemplateColumns: "1fr 1fr" }}
+        className="min-h-screen flex items-center gap-[60px] py-10 max-md:flex-col max-md:gap-4 max-md:py-6 max-md:min-h-[100dvh] max-md:justify-center"
       >
         {/* Text Stack */}
-        <div className="relative h-[360px] max-md:h-[300px]">
+        <div className="relative flex-1 h-[400px] max-md:h-[240px] max-md:w-full max-md:flex-none">
           {features.map((feature, idx) => (
             <div
               key={idx}
               className={cn(
-                "absolute top-0 left-0 w-full transition-all duration-500 pointer-events-none",
+                "absolute top-0 left-0 w-full transition-all duration-[500ms] pointer-events-none",
                 idx === currentFeature && "opacity-100 pointer-events-auto",
                 idx !== currentFeature && "opacity-0"
               )}
@@ -207,7 +255,7 @@ export function FeaturesSection() {
                       : "translateY(30px)",
               }}
             >
-              <div className="text-[0.8rem] text-primary font-bold tracking-[2px] uppercase mb-4">
+              <div className="text-[0.95rem] text-primary font-extrabold tracking-[2.5px] uppercase mb-5">
                 {feature.number}
               </div>
               <h2 className="text-[clamp(2.2rem,3.5vw,3.5rem)] leading-[1.05] tracking-[-1.5px] font-semibold text-foreground mb-5 whitespace-pre-line">
@@ -226,7 +274,7 @@ export function FeaturesSection() {
         </div>
 
         {/* Phone */}
-        <div className="max-md:order-first">
+        <div className="flex-1 max-md:order-first max-md:w-full max-md:flex-none">
           <PhoneMockup activeScreen={currentFeature} />
         </div>
       </section>
@@ -235,14 +283,16 @@ export function FeaturesSection() {
       <div
         className={cn(
           "fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-[100] transition-opacity duration-300 max-md:hidden",
-          isLocked ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          isLocked
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
         )}
       >
         {[0, 1, 2].map((idx) => (
           <button
             key={idx}
             onClick={() => {
-              if (idx !== currentFeature && !isTransitioning) {
+              if (idx !== currentFeature && !isTransitioningRef.current) {
                 goToFeature(idx, idx > currentFeature ? 1 : -1)
               }
             }}

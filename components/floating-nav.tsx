@@ -1,26 +1,44 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { cn } from "@/lib/utils"
+import Image from "next/image"
 
 export function FloatingNav() {
-  const [scrolled, setScrolled] = useState(false)
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const rafRef = useRef<number>(0)
 
   useEffect(() => {
     function updateNav() {
       const hero = document.getElementById("heroSection")
       if (!hero) return
-      const heroBottom = hero.getBoundingClientRect().bottom
-      setScrolled(heroBottom < 120)
+      const heroRect = hero.getBoundingClientRect()
+      const heroHeight = hero.offsetHeight
+      // 0 = at top, 1 = hero scrolled past
+      const progress = Math.min(
+        1,
+        Math.max(0, -heroRect.top / (heroHeight * 0.4))
+      )
+      setScrollProgress(progress)
     }
 
-    window.addEventListener("scroll", updateNav, { passive: true })
+    function onScroll() {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = requestAnimationFrame(updateNav)
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true })
     updateNav()
-    return () => window.removeEventListener("scroll", updateNav)
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      cancelAnimationFrame(rafRef.current)
+    }
   }, [])
 
+  const scrolled = scrollProgress > 0.3
+
   function scrollToWaitlist() {
-    document.body.classList.remove("scroll-locked")
+    document.body.style.overflow = ""
     setTimeout(() => {
       document
         .getElementById("waitlistSection")
@@ -28,43 +46,62 @@ export function FloatingNav() {
     }, 50)
   }
 
+  // Interpolate logo size: starts at 280px wide, shrinks to 120px
+  const isMobileish = typeof window !== "undefined" && window.innerWidth < 768
+  const startWidth = isMobileish ? 200 : 280
+  const endWidth = isMobileish ? 100 : 120
+  const logoWidth = startWidth - scrollProgress * (startWidth - endWidth)
+  const logoHeight = logoWidth * 0.22 // maintain aspect ratio
+
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-[200] flex items-center transition-all duration-500",
+        "fixed top-0 left-0 right-0 z-[200] flex items-center transition-colors duration-500",
         scrolled
-          ? "justify-between py-4 px-10 max-md:px-5 max-md:py-3 border-b border-foreground/[0.06]"
-          : "justify-center py-8 px-10 max-md:py-5 max-md:px-5"
+          ? "justify-between border-b border-foreground/[0.06]"
+          : "justify-center"
       )}
       style={{
+        padding: scrolled
+          ? "12px clamp(20px, 5vw, 40px)"
+          : `${32 - scrollProgress * 20}px clamp(20px, 5vw, 40px)`,
         transitionTimingFunction: "cubic-bezier(0.22,1,0.36,1)",
         ...(scrolled
           ? {
-              background: "rgba(10,10,10,0.8)",
+              background: "rgba(10,10,10,0.85)",
               backdropFilter: "blur(24px)",
               WebkitBackdropFilter: "blur(24px)",
             }
           : {}),
       }}
     >
-      {/* Logo text */}
+      {/* Logo image */}
       <div
-        className={cn(
-          "font-bold tracking-[-0.02em] transition-all duration-500 text-foreground/85",
-          scrolled ? "text-lg" : "text-2xl"
-        )}
+        className="transition-none flex-shrink-0"
+        style={{
+          width: `${logoWidth}px`,
+          height: `${logoHeight}px`,
+        }}
       >
-        ODDS/MATE
+        <Image
+          src="/images/oddsmate-logo.png"
+          alt="ODDS/MATE"
+          width={280}
+          height={62}
+          priority
+          className="w-full h-full object-contain"
+          style={{ filter: "brightness(0.9)" }}
+        />
       </div>
 
       {/* CTA button */}
       <button
         onClick={scrollToWaitlist}
         className={cn(
-          "font-sans text-[0.78rem] font-semibold text-primary border-none bg-transparent cursor-pointer tracking-[0.03em] uppercase transition-all duration-300 hover:text-foreground",
+          "font-sans text-[0.85rem] font-bold tracking-[0.05em] uppercase cursor-pointer transition-all duration-300 rounded-full border",
           scrolled
-            ? "opacity-100 translate-x-0 pointer-events-auto"
-            : "opacity-0 translate-x-2.5 pointer-events-none absolute right-10 max-md:right-5"
+            ? "opacity-100 translate-x-0 pointer-events-auto px-6 py-2.5 bg-primary/20 border-primary/40 text-foreground hover:bg-primary/30 hover:border-primary/60 hover:shadow-[0_0_20px_rgba(156,132,163,0.3)]"
+            : "opacity-0 translate-x-2.5 pointer-events-none absolute right-10 max-md:right-5 px-6 py-2.5 bg-transparent border-transparent text-foreground"
         )}
       >
         Get Access

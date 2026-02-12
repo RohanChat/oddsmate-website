@@ -25,6 +25,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={victorMono.variable}>
+      <head>
+        <script
+          type="text/javascript"
+          src="https://app.viral-loops.com/widgetsV2/core/loader.js"
+          data-campaign-id="ArwbyWM6Vu8sn8nmtKOoxV1swp4"
+          id="viral-loops-loader"
+          async
+        />
+      </head>
       <body className="font-sans antialiased overflow-x-hidden">{children}</body>
     </html>
   )

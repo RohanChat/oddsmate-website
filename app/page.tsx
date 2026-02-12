@@ -7,7 +7,7 @@ import { FeaturesSection } from "@/components/features-section"
 import { WaitlistSection } from "@/components/waitlist-section"
 
 function scrollToWaitlist() {
-  document.body.classList.remove("scroll-locked")
+  document.body.style.overflow = ""
   setTimeout(() => {
     document
       .getElementById("waitlistSection")

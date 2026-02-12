@@ -10,7 +10,7 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
   return (
     <section
       id="heroSection"
-      className="min-h-screen flex flex-col justify-center py-[6vh] pb-[8vh]"
+      className="min-h-screen flex flex-col justify-center pt-[14vh] pb-[8vh] max-md:pt-[16vh]"
     >
       <TypingAnimation />
 

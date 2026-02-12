@@ -61,7 +61,4 @@
   animation: blink 1s step-end infinite;
 }
 
-/* Scroll locked state */
-.scroll-locked {
-  overflow: hidden;
-}
+

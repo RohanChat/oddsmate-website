@@ -13,13 +13,13 @@ const features = [
   },
   {
     number: "02 / Alerts",
-    title: "First to know.",
+    title: "Tapped in.",
     description:
       "Whale trades, insider bets, volume spikes — pushed to your lock screen before it's priced in.",
   },
   {
     number: "03 / Analysis",
-    title: "Quant in your\npocket.",
+    title: "Your pocket\nquant.",
     description:
       "Your mate pulls the data, spots the patterns, and gives you the analysis that matters.",
   },

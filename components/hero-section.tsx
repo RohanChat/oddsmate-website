@@ -18,15 +18,15 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
       {/* Typing animation + copy, vertically centered */}
       <div>
         <TypingAnimation />
-        <div className="mt-6 max-w-[600px] max-md:mt-4">
+        <div className="mt-8 max-w-[600px] max-md:mt-5">
           <p className="text-[1.3rem] leading-relaxed text-muted-foreground font-normal text-left max-md:text-[1rem]">
             Your unfair advantage in prediction markets is here.
           </p>
         </div>
       </div>
 
-      {/* Bottom spacer - slightly smaller on mobile to push button higher */}
-      <div className="flex-1 max-md:flex-[0.7]" />
+      {/* Bottom spacer - smaller on mobile to push button higher */}
+      <div className="flex-1 max-md:flex-[0.5]" />
 
       {/* CTA button - centered, anchored to bottom */}
       <div className="flex justify-center">

@@ -33,9 +33,9 @@ const features = [
 ]
 
 const NUM_FEATURES = 4
-const SCROLL_PX_PER_FEATURE = 160
-const TOUCH_PX_PER_FEATURE = 40
-const TRANSITION_MS = 550
+const WHEEL_THRESHOLD = 120
+const TOUCH_THRESHOLD = 30
+const TRANSITION_MS = 500
 
 export function FeaturesSection() {
   const [currentFeature, setCurrentFeature] = useState(0)
@@ -43,269 +43,212 @@ export function FeaturesSection() {
   const [prevFeature, setPrevFeature] = useState<number | null>(null)
   const [direction, setDirection] = useState(1)
   const [isMobile, setIsMobile] = useState(false)
+
   const sectionRef = useRef<HTMLElement>(null)
-  const scrollAccumulator = useRef(0)
-  const isLockedRef = useRef(false)
-  const isTransitioningRef = useRef(false)
-  const currentFeatureRef = useRef(0)
-  const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const accum = useRef(0)
+  const locked = useRef(false)
+  const transitioning = useRef(false)
+  const feat = useRef(0)
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    function checkMobile() {
-      setIsMobile(window.innerWidth < 768)
-    }
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener("resize", check)
+    return () => window.removeEventListener("resize", check)
   }, [])
 
-  const lockScroll = useCallback(() => {
-    if (isLockedRef.current) return
-    isLockedRef.current = true
+  // --- Lock / Unlock ---
+  const lock = useCallback((startFeature: number) => {
+    if (locked.current) return
+    locked.current = true
     setIsLocked(true)
-    scrollAccumulator.current = 0
+    accum.current = 0
 
-    const rect = sectionRef.current?.getBoundingClientRect()
-    if (rect && Math.abs(rect.top) > 2) {
-      window.scrollTo({ top: window.scrollY + rect.top, behavior: "auto" })
+    feat.current = startFeature
+    setCurrentFeature(startFeature)
+
+    // Snap section to top
+    const el = sectionRef.current
+    if (el) {
+      const rect = el.getBoundingClientRect()
+      if (Math.abs(rect.top) > 2) {
+        window.scrollTo({ top: window.scrollY + rect.top, behavior: "auto" })
+      }
     }
     document.body.style.overflow = "hidden"
   }, [])
 
-  const unlockScroll = useCallback((dir?: number) => {
-    if (!isLockedRef.current) return
-    isLockedRef.current = false
+  const unlock = useCallback((dir: number) => {
+    if (!locked.current) return
+    locked.current = false
     setIsLocked(false)
-    scrollAccumulator.current = 0
+    accum.current = 0
     document.body.style.overflow = ""
 
-    if (sectionRef.current) {
-      const rect = sectionRef.current.getBoundingClientRect()
-      if (dir === 1) {
-        // Scrolling down past last feature - nudge past section
-        const sectionBottom = window.scrollY + rect.bottom
-        requestAnimationFrame(() => {
-          window.scrollTo({ top: sectionBottom, behavior: "smooth" })
-        })
-      } else if (dir === -1) {
-        // Scrolling up past first feature - nudge above section
-        const sectionTop = window.scrollY + rect.top - 100
-        requestAnimationFrame(() => {
-          window.scrollTo({ top: Math.max(0, sectionTop), behavior: "smooth" })
-        })
-      }
+    const el = sectionRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+
+    if (dir > 0) {
+      // Past last feature going down -> scroll past section
+      window.scrollTo({ top: window.scrollY + rect.bottom + 1, behavior: "smooth" })
+    } else {
+      // Past first feature going up -> scroll above section
+      window.scrollTo({ top: Math.max(0, window.scrollY + rect.top - 100), behavior: "smooth" })
     }
   }, [])
 
-  const goToFeature = useCallback(
-    (index: number, dir: number) => {
-      if (
-        index < 0 ||
-        index >= NUM_FEATURES ||
-        index === currentFeatureRef.current
-      )
-        return
-      if (isTransitioningRef.current) return
+  // --- Step to a feature ---
+  const step = useCallback((index: number, dir: number) => {
+    if (index < 0 || index >= NUM_FEATURES || transitioning.current) return
 
-      isTransitioningRef.current = true
-      setPrevFeature(currentFeatureRef.current)
-      setDirection(dir)
-      currentFeatureRef.current = index
-      setCurrentFeature(index)
-      scrollAccumulator.current = 0
+    transitioning.current = true
+    setPrevFeature(feat.current)
+    setDirection(dir)
+    feat.current = index
+    setCurrentFeature(index)
+    accum.current = 0
 
-      if (transitionTimer.current) clearTimeout(transitionTimer.current)
-      transitionTimer.current = setTimeout(() => {
-        isTransitioningRef.current = false
-        setPrevFeature(null)
-        scrollAccumulator.current = 0
-      }, TRANSITION_MS)
-    },
-    []
-  )
+    if (timer.current) clearTimeout(timer.current)
+    timer.current = setTimeout(() => {
+      transitioning.current = false
+      setPrevFeature(null)
+      accum.current = 0
+    }, TRANSITION_MS)
+  }, [])
 
-  useEffect(() => {
-    function shouldLock(rect: DOMRect, movingDown: boolean) {
-      const isMobileView = window.innerWidth < 768
-      const topThreshold = isMobileView ? 150 : 60
-      const bottomThreshold = isMobileView ? -150 : -60
+  // --- Is section in the lock zone? ---
+  const inZone = useCallback(() => {
+    const el = sectionRef.current
+    if (!el) return false
+    const rect = el.getBoundingClientRect()
+    // Section top is near the viewport top and section fills most of the screen
+    return rect.top < 200 && rect.top > -200 && rect.bottom > window.innerHeight * 0.4
+  }, [])
 
-      // Lock when scrolling DOWN into the section (entering from above)
-      if (movingDown && rect.top <= topThreshold && rect.top > bottomThreshold && rect.bottom > window.innerHeight * 0.5) {
-        return "down"
-      }
+  // --- Process a scroll delta (works for both wheel and touch) ---
+  const processDelta = useCallback((delta: number, threshold: number) => {
+    const scrollingDown = delta > 0
 
-      // Lock when scrolling UP into the section (entering from below)
-      if (!movingDown && rect.bottom >= window.innerHeight * 0.5 && rect.top < window.innerHeight * 0.3 && rect.top > bottomThreshold) {
-        return "up"
-      }
-
-      return null
+    if (!locked.current) {
+      if (!inZone()) return false
+      // Section is in view -> lock it
+      // If scrolling down, start at feature 0. If scrolling up, start at last feature.
+      lock(scrollingDown ? 0 : NUM_FEATURES - 1)
+      return true
     }
 
-    function handleWheel(e: WheelEvent) {
-      if (!isLockedRef.current) {
-        const rect = sectionRef.current?.getBoundingClientRect()
-        if (rect) {
-          const lockDir = shouldLock(rect, e.deltaY > 0)
-          if (lockDir) {
-            e.preventDefault()
-            // If entering from below (scrolling up), start at last feature
-            if (lockDir === "up" && currentFeatureRef.current === 0) {
-              currentFeatureRef.current = NUM_FEATURES - 1
-              setCurrentFeature(NUM_FEATURES - 1)
-            }
-            lockScroll()
-            return
-          }
-        }
-        return
+    // Locked: accumulate
+    if (transitioning.current) return true
+
+    accum.current += delta
+
+    if (Math.abs(accum.current) >= threshold) {
+      const dir = accum.current > 0 ? 1 : -1
+      const next = feat.current + dir
+
+      if (next >= 0 && next < NUM_FEATURES) {
+        step(next, dir)
+      } else {
+        unlock(dir)
       }
+    }
 
-      e.preventDefault()
-      if (isTransitioningRef.current) return
+    return true // consumed
+  }, [inZone, lock, unlock, step])
 
-      scrollAccumulator.current += e.deltaY
-
-      if (Math.abs(scrollAccumulator.current) >= SCROLL_PX_PER_FEATURE) {
-        const dir = scrollAccumulator.current > 0 ? 1 : -1
-        const nextFeature = currentFeatureRef.current + dir
-
-        if (nextFeature >= 0 && nextFeature < NUM_FEATURES) {
-          goToFeature(nextFeature, dir)
-        } else {
-          unlockScroll(dir)
-        }
-      }
+  // --- Event listeners ---
+  useEffect(() => {
+    function onWheel(e: WheelEvent) {
+      const consumed = processDelta(e.deltaY, WHEEL_THRESHOLD)
+      if (consumed) e.preventDefault()
     }
 
     let touchStartY = 0
     let touchPrevY = 0
-    let touchActive = false
-    let touchLocked = false
 
-    function handleTouchStart(e: TouchEvent) {
+    function onTouchStart(e: TouchEvent) {
       touchStartY = e.touches[0].clientY
       touchPrevY = touchStartY
-      touchActive = true
-      touchLocked = false
-
-      // Proactively lock if the section is already snapped in view
-      if (!isLockedRef.current) {
-        const rect = sectionRef.current?.getBoundingClientRect()
-        if (rect && rect.top <= 10 && rect.top > -10 && rect.bottom > window.innerHeight * 0.5) {
-          e.preventDefault()
-          touchLocked = true
-          lockScroll()
-          scrollAccumulator.current = 0
-        }
-      }
-      // If already locked, prevent default immediately
-      if (isLockedRef.current) {
-        e.preventDefault()
-      }
+      // If locked, prevent default right away
+      if (locked.current) e.preventDefault()
     }
 
-    function handleTouchMove(e: TouchEvent) {
-      if (!touchActive) return
+    function onTouchMove(e: TouchEvent) {
+      const y = e.touches[0].clientY
+      const inc = touchPrevY - y
+      touchPrevY = y
 
-      const currentY = e.touches[0].clientY
-      const totalDelta = touchStartY - currentY
-      const incrementalDelta = touchPrevY - currentY
-      touchPrevY = currentY
-
-      if (!isLockedRef.current) {
-        const rect = sectionRef.current?.getBoundingClientRect()
-        if (rect) {
-          const lockDir = shouldLock(rect, totalDelta > 0)
-          if (lockDir) {
+      if (!locked.current) {
+        // Use total delta to decide direction for lock
+        const totalDelta = touchStartY - y
+        if (Math.abs(totalDelta) > 5) {
+          const consumed = processDelta(totalDelta > 0 ? TOUCH_THRESHOLD + 1 : -(TOUCH_THRESHOLD + 1), TOUCH_THRESHOLD)
+          if (consumed) {
             e.preventDefault()
-            touchLocked = true
-            // If entering from below (scrolling up), start at last feature
-            if (lockDir === "up" && currentFeatureRef.current === 0) {
-              currentFeatureRef.current = NUM_FEATURES - 1
-              setCurrentFeature(NUM_FEATURES - 1)
-            }
-            lockScroll()
-            scrollAccumulator.current = 0
-            return
+            accum.current = 0 // reset after initial lock
           }
         }
         return
       }
 
-      // Always prevent default while locked to stop page scroll
       e.preventDefault()
-      touchLocked = true
+      if (transitioning.current) return
 
-      if (isTransitioningRef.current) return
+      accum.current += inc
 
-      scrollAccumulator.current += incrementalDelta
+      if (Math.abs(accum.current) >= TOUCH_THRESHOLD) {
+        const dir = accum.current > 0 ? 1 : -1
+        const next = feat.current + dir
 
-      if (Math.abs(scrollAccumulator.current) >= TOUCH_PX_PER_FEATURE) {
-        const dir = scrollAccumulator.current > 0 ? 1 : -1
-        const nextFeature = currentFeatureRef.current + dir
-
-        if (nextFeature >= 0 && nextFeature < NUM_FEATURES) {
-          goToFeature(nextFeature, dir)
+        if (next >= 0 && next < NUM_FEATURES) {
+          step(next, dir)
         } else {
-          unlockScroll(dir)
-          touchLocked = false
+          unlock(dir)
         }
       }
     }
 
-    function handleTouchEnd() {
-      touchActive = false
-      touchLocked = false
-      if (isLockedRef.current) {
-        scrollAccumulator.current = 0
-      }
+    function onTouchEnd() {
+      accum.current = 0
     }
 
-    function handleKeyDown(e: KeyboardEvent) {
-      if (!isLockedRef.current) return
-      if (isTransitioningRef.current) return
+    function onKeyDown(e: KeyboardEvent) {
+      if (!locked.current || transitioning.current) return
 
       if (e.key === "ArrowDown" || e.key === " ") {
         e.preventDefault()
-        const next = currentFeatureRef.current + 1
-        if (next < NUM_FEATURES) {
-          goToFeature(next, 1)
-        } else {
-          unlockScroll(1)
-        }
+        const next = feat.current + 1
+        if (next < NUM_FEATURES) step(next, 1)
+        else unlock(1)
       } else if (e.key === "ArrowUp") {
         e.preventDefault()
-        const prev = currentFeatureRef.current - 1
-        if (prev >= 0) {
-          goToFeature(prev, -1)
-        } else {
-          unlockScroll(-1)
-        }
+        const prev = feat.current - 1
+        if (prev >= 0) step(prev, -1)
+        else unlock(-1)
       }
     }
 
-    window.addEventListener("wheel", handleWheel, { passive: false })
-    window.addEventListener("touchstart", handleTouchStart, { passive: false })
-    window.addEventListener("touchmove", handleTouchMove, { passive: false })
-    window.addEventListener("touchend", handleTouchEnd, { passive: true })
-    window.addEventListener("keydown", handleKeyDown)
+    window.addEventListener("wheel", onWheel, { passive: false })
+    window.addEventListener("touchstart", onTouchStart, { passive: false })
+    window.addEventListener("touchmove", onTouchMove, { passive: false })
+    window.addEventListener("touchend", onTouchEnd, { passive: true })
+    window.addEventListener("keydown", onKeyDown)
 
     return () => {
-      window.removeEventListener("wheel", handleWheel)
-      window.removeEventListener("touchstart", handleTouchStart)
-      window.removeEventListener("touchmove", handleTouchMove)
-      window.removeEventListener("touchend", handleTouchEnd)
-      window.removeEventListener("keydown", handleKeyDown)
-      if (transitionTimer.current) clearTimeout(transitionTimer.current)
+      window.removeEventListener("wheel", onWheel)
+      window.removeEventListener("touchstart", onTouchStart)
+      window.removeEventListener("touchmove", onTouchMove)
+      window.removeEventListener("touchend", onTouchEnd)
+      window.removeEventListener("keydown", onKeyDown)
+      if (timer.current) clearTimeout(timer.current)
     }
-  }, [lockScroll, unlockScroll, goToFeature])
+  }, [processDelta, step, unlock])
 
+  // Cleanup on unmount
   useEffect(() => {
-    return () => {
-      document.body.style.overflow = ""
-    }
+    return () => { document.body.style.overflow = "" }
   }, [])
 
   return (
@@ -385,8 +328,8 @@ export function FeaturesSection() {
           <button
             key={idx}
             onClick={() => {
-              if (idx !== currentFeature && !isTransitioningRef.current) {
-                goToFeature(idx, idx > currentFeature ? 1 : -1)
+              if (idx !== currentFeature && !transitioning.current) {
+                step(idx, idx > currentFeature ? 1 : -1)
               }
             }}
             className={cn(

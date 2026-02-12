@@ -4,15 +4,20 @@ import { useEffect, useRef } from "react"
 
 export function BackgroundEffects() {
   const orbRef = useRef<HTMLDivElement>(null)
+  const hasMovedRef = useRef(false)
 
   useEffect(() => {
     function handleMouseMove(e: MouseEvent) {
       if (!orbRef.current) return
+      if (!hasMovedRef.current) {
+        hasMovedRef.current = true
+        orbRef.current.style.opacity = "1"
+      }
       orbRef.current.style.background = `radial-gradient(
         600px circle at ${e.clientX}px ${e.clientY}px,
-        rgba(156,132,163,0.20) 0%,
-        rgba(156,132,163,0.08) 25%,
-        rgba(89,45,74,0.04) 50%,
+        rgba(140,100,180,0.18) 0%,
+        rgba(156,132,163,0.10) 25%,
+        rgba(89,45,74,0.05) 50%,
         transparent 70%
       )`
     }
@@ -37,11 +42,8 @@ export function BackgroundEffects() {
       {/* Interactive gradient orb that follows cursor */}
       <div
         ref={orbRef}
-        className="fixed inset-0 pointer-events-none z-0 opacity-0 transition-opacity duration-500 hover:opacity-100"
+        className="fixed inset-0 pointer-events-none z-0 transition-opacity duration-700"
         style={{ opacity: 0 }}
-        onMouseEnter={() => {
-          if (orbRef.current) orbRef.current.style.opacity = "1"
-        }}
       />
 
       {/* Grid overlay */}

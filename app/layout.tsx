@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={victorMono.variable}>
+    <html lang="en" className={victorMono.variable} suppressHydrationWarning>
       <head>
         <script
           type="text/javascript"

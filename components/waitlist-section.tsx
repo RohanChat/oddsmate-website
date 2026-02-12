@@ -4,7 +4,7 @@ export function WaitlistSection() {
   return (
     <section
       id="waitlistSection"
-      className="py-[100px] px-6 text-center relative z-[1] max-md:py-8 max-md:pt-16 max-md:px-3"
+      className="py-[100px] px-6 text-center relative z-[1] max-md:py-8 max-md:pt-12 max-md:px-3"
     >
       <div className="max-w-[600px] mx-auto">
         <h2 className="text-[clamp(1.8rem,4vw,3rem)] font-bold tracking-[-1.5px] mb-3 leading-[1.1] max-md:text-[1.5rem] max-md:mb-2 uppercase" style={{ color: '#9c84a3' }}>

@@ -32,7 +32,7 @@ export function HeroSection({ onCtaClick }: HeroSectionProps) {
       <div className="flex justify-center">
         <button
           onClick={onCtaClick}
-          className="font-sans text-base font-semibold text-foreground bg-secondary border-2 border-primary/30 px-12 py-4 rounded-full cursor-pointer tracking-[0.02em] shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all duration-300 hover:bg-primary hover:border-primary hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(156,132,163,0.4)] max-md:px-10 max-md:py-3.5 max-md:text-[0.9rem]"
+          className="font-sans text-base font-semibold text-foreground bg-secondary border-2 border-primary/30 px-12 py-4 rounded-full cursor-pointer tracking-[0.02em] shadow-[0_4px_20px_rgba(0,0,0,0.08)] transition-all duration-300 hover:bg-primary hover:border-primary hover:text-primary-foreground hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(156,132,163,0.3)] max-md:px-10 max-md:py-3.5 max-md:text-[0.9rem]"
         >
           Get Access
         </button>

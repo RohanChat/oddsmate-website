@@ -15,9 +15,9 @@ export function BackgroundEffects() {
       }
       orbRef.current.style.background = `radial-gradient(
         600px circle at ${e.clientX}px ${e.clientY}px,
-        rgba(140,100,180,0.18) 0%,
-        rgba(156,132,163,0.10) 25%,
-        rgba(89,45,74,0.05) 50%,
+        rgba(156,132,163,0.15) 0%,
+        rgba(156,132,163,0.08) 25%,
+        rgba(140,100,180,0.04) 50%,
         transparent 70%
       )`
     }
@@ -32,9 +32,9 @@ export function BackgroundEffects() {
         className="fixed inset-0 pointer-events-none z-0"
         style={{
           background: `
-            radial-gradient(circle at 20% 30%, rgba(156,132,163,0.12) 0%, transparent 40%),
-            radial-gradient(circle at 80% 70%, rgba(89,45,74,0.09) 0%, transparent 40%),
-            radial-gradient(circle at 50% 50%, rgba(156,132,163,0.04) 0%, transparent 60%)
+            radial-gradient(circle at 20% 30%, rgba(156,132,163,0.08) 0%, transparent 40%),
+            radial-gradient(circle at 80% 70%, rgba(140,100,180,0.06) 0%, transparent 40%),
+            radial-gradient(circle at 50% 50%, rgba(156,132,163,0.03) 0%, transparent 60%)
           `,
         }}
       />
@@ -51,8 +51,8 @@ export function BackgroundEffects() {
         className="fixed inset-0 pointer-events-none z-0 md:hidden"
         style={{
           background: `
-            radial-gradient(circle at 30% 40%, rgba(156,132,163,0.14) 0%, transparent 50%),
-            radial-gradient(circle at 70% 60%, rgba(140,100,180,0.10) 0%, transparent 50%)
+            radial-gradient(circle at 30% 40%, rgba(156,132,163,0.10) 0%, transparent 50%),
+            radial-gradient(circle at 70% 60%, rgba(140,100,180,0.07) 0%, transparent 50%)
           `,
           animation: "mobileGradientDrift 15s ease-in-out infinite alternate",
         }}
@@ -63,8 +63,8 @@ export function BackgroundEffects() {
         className="fixed inset-0 pointer-events-none z-0 opacity-40"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(156,132,163,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(156,132,163,0.03) 1px, transparent 1px)
+            linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)
           `,
           backgroundSize: "60px 60px",
         }}

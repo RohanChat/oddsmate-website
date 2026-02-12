@@ -150,7 +150,7 @@ export function FeaturesSection() {
               className={cn(
                 "w-2 h-2 rounded-full transition-all duration-300",
                 idx === currentFeature
-                  ? "bg-primary shadow-[0_0_10px_rgba(156,132,163,0.5)] scale-[1.4]"
+                  ? "bg-primary shadow-[0_0_10px_rgba(156,132,163,0.4)] scale-[1.4]"
                   : "bg-primary/20"
               )}
             />

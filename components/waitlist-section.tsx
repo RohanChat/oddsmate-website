@@ -17,8 +17,8 @@ export function WaitlistSection() {
         <div
           className="rounded-2xl p-6 max-md:p-2.5 max-md:rounded-xl overflow-hidden"
           style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            background: "rgba(0,0,0,0.03)",
+            border: "1px solid rgba(0,0,0,0.08)",
             backdropFilter: "blur(10px)",
             WebkitBackdropFilter: "blur(10px)",
           }}

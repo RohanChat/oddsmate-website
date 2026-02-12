@@ -30,7 +30,7 @@ const screens = [
     messages: [
       {
         type: "ai",
-        text: '🚨 WHALE ALERT: $250k just hit YES on "Fed cuts rates in March"',
+        text: '\u{1F6A8} WHALE ALERT: $250k just hit YES on "Fed cuts rates in March"',
       },
       { type: "ai", text: "Line moved from 62% to 68% in 3 minutes" },
       {
@@ -131,13 +131,13 @@ export function PhoneMockup({ activeScreen }: PhoneMockupProps) {
       <div
         className="w-[360px] h-[660px] flex flex-col overflow-hidden relative max-md:w-[220px] max-md:h-[380px]"
         style={{
-          background: "rgba(255,255,255,0.04)",
+          background: "rgba(0,0,0,0.04)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
           borderRadius: "36px",
-          border: "2px solid rgba(255,255,255,0.1)",
+          border: "2px solid rgba(0,0,0,0.1)",
           boxShadow:
-            "0 40px 80px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.06)",
+            "0 40px 80px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(0,0,0,0.06)",
         }}
       >
         {/* Phone Header */}
@@ -146,15 +146,15 @@ export function PhoneMockup({ activeScreen }: PhoneMockupProps) {
           style={{
             gridTemplateColumns: "40px 1fr 40px",
             padding: "14px 16px",
-            background: "rgba(255,255,255,0.05)",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
+            background: "rgba(0,0,0,0.05)",
+            borderBottom: "1px solid rgba(0,0,0,0.06)",
           }}
         >
           <div className="flex items-center text-primary">
             <ChevronLeft className="w-[18px] h-[18px] max-md:w-[12px] max-md:h-[12px] text-primary" strokeWidth={2.5} />
           </div>
           <div className="text-center">
-            <div className="font-bold text-[#eee] text-[0.82rem] max-md:text-[0.6rem] tracking-[-0.02em]">
+            <div className="font-bold text-[#262626] text-[0.82rem] max-md:text-[0.6rem] tracking-[-0.02em]">
               ODDS/MATE
             </div>
             <div className="text-[0.62rem] max-md:text-[0.42rem] text-foreground/35 mt-0.5 flex items-center justify-center gap-1">
@@ -195,8 +195,8 @@ export function PhoneMockup({ activeScreen }: PhoneMockupProps) {
                       key={msgIdx}
                       className="self-end max-w-[88%] px-4 py-3 max-md:px-2.5 max-md:py-1.5 rounded-2xl max-md:rounded-xl leading-relaxed max-md:leading-snug"
                       style={{
-                        background: "rgba(255,255,255,0.1)",
-                        color: "#eee",
+                        background: "rgba(0,0,0,0.08)",
+                        color: "#262626",
                         borderBottomRightRadius: "4px",
                       }}
                     >
@@ -208,7 +208,7 @@ export function PhoneMockup({ activeScreen }: PhoneMockupProps) {
                   return (
                     <div
                       key={msgIdx}
-                      className="self-start max-w-[88%] px-4 py-3 max-md:px-2.5 max-md:py-1.5 rounded-2xl max-md:rounded-xl leading-relaxed max-md:leading-snug text-foreground"
+                      className="self-start max-w-[88%] px-4 py-3 max-md:px-2.5 max-md:py-1.5 rounded-2xl max-md:rounded-xl leading-relaxed max-md:leading-snug text-accent-foreground"
                       style={{
                         background: "hsl(var(--accent))",
                         borderBottomLeftRadius: "4px",
@@ -224,16 +224,16 @@ export function PhoneMockup({ activeScreen }: PhoneMockupProps) {
                       key={msgIdx}
                       className="self-start w-full overflow-hidden rounded-2xl max-md:rounded-xl"
                       style={{
-                        background: "rgba(255,255,255,0.06)",
-                        border: "1px solid rgba(156,132,163,0.2)",
+                        background: "rgba(0,0,0,0.04)",
+                        border: "1px solid rgba(156,132,163,0.25)",
                         borderBottomLeftRadius: "4px",
                       }}
                     >
                       <div
                         className="px-3.5 py-2 max-md:px-2 max-md:py-1 text-[0.68rem] max-md:text-[0.45rem] text-primary font-bold uppercase tracking-[1px]"
                         style={{
-                          background: "rgba(156,132,163,0.1)",
-                          borderBottom: "1px solid rgba(156,132,163,0.1)",
+                          background: "rgba(156,132,163,0.12)",
+                          borderBottom: "1px solid rgba(156,132,163,0.15)",
                         }}
                       >
                         {msg.header}
@@ -257,15 +257,15 @@ export function PhoneMockup({ activeScreen }: PhoneMockupProps) {
                             style={{
                               borderBottom:
                                 rowIdx < (msg.rows?.length ?? 0) - 1
-                                  ? "1px solid rgba(255,255,255,0.04)"
+                                  ? "1px solid rgba(0,0,0,0.06)"
                                   : "none",
                             }}
                           >
                             <span
                               className={cn(
                                 row.highlight
-                                  ? "font-semibold text-[#2ecc71]"
-                                  : "text-[#ddd]"
+                                  ? "font-semibold text-[#1e8449]"
+                                  : "text-[#333]"
                               )}
                             >
                               {row.label}
@@ -273,7 +273,7 @@ export function PhoneMockup({ activeScreen }: PhoneMockupProps) {
                             <span
                               className={cn(
                                 row.variant === "up"
-                                  ? "text-[#27ae60] font-semibold"
+                                  ? "text-[#1e8449] font-semibold"
                                   : "text-foreground/50"
                               )}
                             >
@@ -296,17 +296,17 @@ export function PhoneMockup({ activeScreen }: PhoneMockupProps) {
           className="flex gap-2.5 max-md:gap-1.5 items-center"
           style={{
             padding: "14px 16px",
-            background: "rgba(255,255,255,0.04)",
-            borderTop: "1px solid rgba(255,255,255,0.06)",
+            background: "rgba(0,0,0,0.04)",
+            borderTop: "1px solid rgba(0,0,0,0.06)",
           }}
         >
           <div
             className="flex-1 h-9 max-md:h-6 rounded-full flex items-center pl-3.5 max-md:pl-2 text-[0.72rem] max-md:text-[0.45rem] text-foreground/30"
-            style={{ background: "rgba(255,255,255,0.06)" }}
+            style={{ background: "rgba(0,0,0,0.05)" }}
           >
             {screens[activeScreen]?.inputText ?? "Type a message..."}
           </div>
-          <div className="w-9 h-9 max-md:w-6 max-md:h-6 rounded-full flex items-center justify-center text-foreground flex-shrink-0 bg-accent">
+          <div className="w-9 h-9 max-md:w-6 max-md:h-6 rounded-full flex items-center justify-center text-accent-foreground flex-shrink-0 bg-accent">
             <ArrowUp className="w-3.5 h-3.5 max-md:w-2.5 max-md:h-2.5" strokeWidth={2.5} />
           </div>
         </div>

@@ -14,7 +14,6 @@ export function WaitlistPopup() {
     return () => window.removeEventListener("oddsmate:open-popup", handleOpen)
   }, [])
 
-  // Close on Escape
   useEffect(() => {
     if (!isOpen) return
     function onKey(e: KeyboardEvent) {
@@ -24,7 +23,6 @@ export function WaitlistPopup() {
     return () => window.removeEventListener("keydown", onKey)
   }, [isOpen])
 
-  // Lock body scroll when open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden"
@@ -48,11 +46,11 @@ export function WaitlistPopup() {
       aria-modal="true"
       aria-label="Join the waitlist"
     >
-      {/* Liquid glass backdrop */}
+      {/* Backdrop */}
       <div
         className="absolute inset-0"
         style={{
-          background: "rgba(10, 10, 10, 0.7)",
+          background: "rgba(217, 215, 215, 0.75)",
           backdropFilter: "blur(30px) saturate(1.3)",
           WebkitBackdropFilter: "blur(30px) saturate(1.3)",
         }}
@@ -63,12 +61,12 @@ export function WaitlistPopup() {
         ref={containerRef}
         className="relative z-10 w-full max-w-[520px] mx-6 rounded-3xl p-10 max-md:p-5 max-md:mx-4 max-md:max-w-[calc(100vw-32px)] animate-in fade-in zoom-in-95 duration-300"
         style={{
-          background: "rgba(255, 255, 255, 0.05)",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
+          background: "rgba(255, 255, 255, 0.5)",
+          border: "1px solid rgba(0, 0, 0, 0.1)",
           backdropFilter: "blur(40px) saturate(1.4)",
           WebkitBackdropFilter: "blur(40px) saturate(1.4)",
           boxShadow:
-            "0 8px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
+            "0 8px 60px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6)",
         }}
       >
         {/* Close button */}
@@ -76,8 +74,8 @@ export function WaitlistPopup() {
           onClick={() => setIsOpen(false)}
           className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           style={{
-            background: "rgba(255,255,255,0.06)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            background: "rgba(0,0,0,0.05)",
+            border: "1px solid rgba(0,0,0,0.08)",
           }}
           aria-label="Close"
         >

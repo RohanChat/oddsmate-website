@@ -27,13 +27,16 @@ const features = [
 ]
 
 const NUM_FEATURES = 3
-const SCROLL_PX_PER_FEATURE = 150
+const SCROLL_PX_PER_FEATURE = 160
+const TOUCH_PX_PER_FEATURE = 80
+const TRANSITION_MS = 550
 
 export function FeaturesSection() {
   const [currentFeature, setCurrentFeature] = useState(0)
   const [isLocked, setIsLocked] = useState(false)
   const [prevFeature, setPrevFeature] = useState<number | null>(null)
   const [direction, setDirection] = useState(1)
+  const [isMobile, setIsMobile] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
   const scrollAccumulator = useRef(0)
   const isLockedRef = useRef(false)
@@ -41,13 +44,21 @@ export function FeaturesSection() {
   const currentFeatureRef = useRef(0)
   const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  useEffect(() => {
+    function checkMobile() {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
+
   const lockScroll = useCallback(() => {
     if (isLockedRef.current) return
     isLockedRef.current = true
     setIsLocked(true)
     scrollAccumulator.current = 0
 
-    // Snap section to viewport top
     const rect = sectionRef.current?.getBoundingClientRect()
     if (rect && Math.abs(rect.top) > 2) {
       window.scrollTo({ top: window.scrollY + rect.top, behavior: "auto" })
@@ -85,23 +96,25 @@ export function FeaturesSection() {
         isTransitioningRef.current = false
         setPrevFeature(null)
         scrollAccumulator.current = 0
-      }, 500)
+      }, TRANSITION_MS)
     },
     []
   )
 
   useEffect(() => {
+    function shouldLock(rect: DOMRect, movingDown: boolean) {
+      return (
+        movingDown &&
+        rect.top <= 60 &&
+        rect.top > -60 &&
+        rect.bottom > window.innerHeight * 0.5
+      )
+    }
+
     function handleWheel(e: WheelEvent) {
       if (!isLockedRef.current) {
-        // Check if we should lock
         const rect = sectionRef.current?.getBoundingClientRect()
-        if (
-          rect &&
-          e.deltaY > 0 &&
-          rect.top <= 100 &&
-          rect.top > -40 &&
-          rect.bottom > window.innerHeight * 0.5
-        ) {
+        if (rect && shouldLock(rect, e.deltaY > 0)) {
           e.preventDefault()
           lockScroll()
           return
@@ -109,7 +122,6 @@ export function FeaturesSection() {
         return
       }
 
-      // We're locked
       e.preventDefault()
       if (isTransitioningRef.current) return
 
@@ -143,13 +155,7 @@ export function FeaturesSection() {
 
       if (!isLockedRef.current) {
         const rect = sectionRef.current?.getBoundingClientRect()
-        if (
-          rect &&
-          deltaY > 0 &&
-          rect.top <= 100 &&
-          rect.top > -40 &&
-          rect.bottom > window.innerHeight * 0.5
-        ) {
+        if (rect && shouldLock(rect, deltaY > 0)) {
           e.preventDefault()
           lockScroll()
           touchStartY = currentY
@@ -164,7 +170,7 @@ export function FeaturesSection() {
       scrollAccumulator.current += deltaY
       touchStartY = currentY
 
-      if (Math.abs(scrollAccumulator.current) >= SCROLL_PX_PER_FEATURE * 0.6) {
+      if (Math.abs(scrollAccumulator.current) >= TOUCH_PX_PER_FEATURE) {
         const dir = scrollAccumulator.current > 0 ? 1 : -1
         const nextFeature = currentFeatureRef.current + dir
 
@@ -181,7 +187,6 @@ export function FeaturesSection() {
       scrollAccumulator.current = 0
     }
 
-    // Also handle keyboard
     function handleKeyDown(e: KeyboardEvent) {
       if (!isLockedRef.current) return
       if (isTransitioningRef.current) return
@@ -221,7 +226,6 @@ export function FeaturesSection() {
     }
   }, [lockScroll, unlockScroll, goToFeature])
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       document.body.style.overflow = ""
@@ -233,19 +237,30 @@ export function FeaturesSection() {
       <section
         ref={sectionRef}
         id="featuresSection"
-        className="min-h-screen flex items-center gap-[60px] py-10 max-md:flex-col max-md:gap-4 max-md:py-6 max-md:min-h-[100dvh] max-md:justify-center"
+        className={cn(
+          "flex items-center gap-[60px] py-10",
+          "min-h-screen",
+          "max-md:flex-col max-md:gap-3 max-md:py-4 max-md:min-h-[100dvh] max-md:justify-center"
+        )}
       >
         {/* Text Stack */}
-        <div className="relative flex-1 h-[400px] max-md:h-[240px] max-md:w-full max-md:flex-none">
+        <div className={cn(
+          "relative flex-1 h-[400px]",
+          "max-md:h-auto max-md:w-full max-md:flex-none max-md:min-h-[180px]"
+        )}>
           {features.map((feature, idx) => (
             <div
               key={idx}
               className={cn(
-                "absolute top-0 left-0 w-full transition-all duration-[500ms] pointer-events-none",
-                idx === currentFeature && "opacity-100 pointer-events-auto",
-                idx !== currentFeature && "opacity-0"
+                "absolute top-0 left-0 w-full transition-all pointer-events-none",
+                "max-md:relative max-md:top-auto max-md:left-auto",
+                idx === currentFeature
+                  ? "opacity-100 pointer-events-auto"
+                  : cn("opacity-0", !isMobile && "absolute"),
+                isMobile && idx !== currentFeature && "hidden"
               )}
               style={{
+                transitionDuration: `${TRANSITION_MS}ms`,
                 transitionTimingFunction: "cubic-bezier(0.22,1,0.36,1)",
                 transform:
                   idx === currentFeature
@@ -255,17 +270,17 @@ export function FeaturesSection() {
                       : "translateY(30px)",
               }}
             >
-              <div className="text-[0.95rem] text-primary font-extrabold tracking-[2.5px] uppercase mb-5">
+              <div className="text-[1.05rem] text-primary font-extrabold tracking-[2.5px] uppercase mb-4 max-md:text-[0.85rem] max-md:mb-2 max-md:tracking-[2px]">
                 {feature.number}
               </div>
-              <h2 className="text-[clamp(2.2rem,3.5vw,3.5rem)] leading-[1.05] tracking-[-1.5px] font-semibold text-foreground mb-5 whitespace-pre-line">
+              <h2 className="text-[clamp(2.2rem,3.5vw,3.5rem)] leading-[1.05] tracking-[-1.5px] font-semibold text-foreground mb-4 whitespace-pre-line max-md:text-[1.6rem] max-md:mb-2 max-md:leading-[1.1]">
                 {feature.title}
               </h2>
-              <p className="text-[1.05rem] leading-relaxed text-muted-foreground font-normal max-w-[440px]">
+              <p className="text-[1.05rem] leading-relaxed text-muted-foreground font-normal max-w-[440px] max-md:text-[0.85rem] max-md:leading-normal">
                 {feature.description}
               </p>
               {feature.badge && (
-                <span className="inline-block text-[0.7rem] text-primary border border-primary/30 px-3.5 py-1 rounded-full mt-4 font-semibold uppercase tracking-[1px]">
+                <span className="inline-block text-[0.7rem] text-primary border border-primary/30 px-3.5 py-1 rounded-full mt-3 font-semibold uppercase tracking-[1px] max-md:text-[0.6rem] max-md:mt-2">
                   {feature.badge}
                 </span>
               )}
@@ -282,7 +297,8 @@ export function FeaturesSection() {
       {/* Scroll Progress Dots */}
       <div
         className={cn(
-          "fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-[100] transition-opacity duration-300 max-md:hidden",
+          "fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-[100] transition-opacity duration-300",
+          "max-md:right-3 max-md:gap-2",
           isLocked
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"

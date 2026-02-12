@@ -6,13 +6,21 @@ import { HeroSection } from "@/components/hero-section"
 import { FeaturesSection } from "@/components/features-section"
 import { WaitlistSection } from "@/components/waitlist-section"
 
-function scrollToWaitlist() {
-  document.body.style.overflow = ""
-  setTimeout(() => {
-    document
-      .getElementById("waitlistSection")
-      ?.scrollIntoView({ behavior: "smooth" })
-  }, 50)
+function openViralLoopsPopup() {
+  const popup = document.querySelector(
+    'form-widget[mode="popup"]'
+  ) as HTMLElement | null
+  if (popup && typeof (popup as any).open === "function") {
+    ;(popup as any).open()
+  } else {
+    // Fallback: scroll to waitlist embed
+    document.body.style.overflow = ""
+    setTimeout(() => {
+      document
+        .getElementById("waitlistSection")
+        ?.scrollIntoView({ behavior: "smooth" })
+    }, 50)
+  }
 }
 
 export default function Page() {
@@ -22,7 +30,7 @@ export default function Page() {
       <FloatingNav />
 
       <div className="relative z-[1] w-full max-w-[1200px] mx-auto px-10 max-md:px-5">
-        <HeroSection onCtaClick={scrollToWaitlist} />
+        <HeroSection onCtaClick={openViralLoopsPopup} />
         <FeaturesSection />
         <WaitlistSection />
 

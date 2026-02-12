@@ -6,15 +6,21 @@ import Image from "next/image"
 
 export function FloatingNav() {
   const [scrollProgress, setScrollProgress] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
   const rafRef = useRef<number>(0)
 
   useEffect(() => {
+    function checkMobile() {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+
     function updateNav() {
       const hero = document.getElementById("heroSection")
       if (!hero) return
       const heroRect = hero.getBoundingClientRect()
       const heroHeight = hero.offsetHeight
-      // 0 = at top, 1 = hero scrolled past
       const progress = Math.min(
         1,
         Math.max(0, -heroRect.top / (heroHeight * 0.4))
@@ -31,77 +37,113 @@ export function FloatingNav() {
     updateNav()
     return () => {
       window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", checkMobile)
       cancelAnimationFrame(rafRef.current)
     }
   }, [])
 
   const scrolled = scrollProgress > 0.3
+  const isHero = !scrolled
 
-  function scrollToWaitlist() {
-    document.body.style.overflow = ""
-    setTimeout(() => {
-      document
-        .getElementById("waitlistSection")
-        ?.scrollIntoView({ behavior: "smooth" })
-    }, 50)
+  function openViralLoopsPopup() {
+    // Try to open the Viral Loops popup form
+    const popup = document.querySelector('form-widget[mode="popup"]') as HTMLElement | null
+    if (popup && typeof (popup as any).open === "function") {
+      ;(popup as any).open()
+    } else {
+      // Fallback: scroll to the waitlist section
+      document.body.style.overflow = ""
+      setTimeout(() => {
+        document
+          .getElementById("waitlistSection")
+          ?.scrollIntoView({ behavior: "smooth" })
+      }, 50)
+    }
   }
 
-  // Interpolate logo size: starts at 280px wide, shrinks to 120px
-  const isMobileish = typeof window !== "undefined" && window.innerWidth < 768
-  const startWidth = isMobileish ? 200 : 280
-  const endWidth = isMobileish ? 100 : 120
-  const logoWidth = startWidth - scrollProgress * (startWidth - endWidth)
-  const logoHeight = logoWidth * 0.22 // maintain aspect ratio
+  // --- Logo sizing ---
+  // Hero: large overlay logo (desktop 420px, mobile 280px)
+  // Scrolled desktop: full logo at 180px
+  // Scrolled mobile: icon at 44px
+  const heroLogoWidth = isMobile ? 280 : 420
+  const scrolledLogoWidth = isMobile ? 44 : 180
+  const logoWidth = heroLogoWidth - scrollProgress * (heroLogoWidth - scrolledLogoWidth)
+  // Aspect ratios differ by logo
+  const heroAspect = 0.55 // overlay logo is more square-ish (wider with height)
+  const scrolledAspect = isMobile ? 1 : 0.22 // icon is 1:1, full logo is wide
+  const aspect = heroAspect - scrollProgress * (heroAspect - scrolledAspect)
+  const logoHeight = logoWidth * aspect
+
+  // Determine which logo to show based on scroll + device
+  const heroLogo = "/images/oddsmate-logo-overlay.png"
+  const scrolledDesktopLogo = "/images/oddsmate-logo.png"
+  const scrolledMobileLogo = "/images/oddsmate-icon.png"
+
+  const currentLogo = isHero
+    ? heroLogo
+    : isMobile
+      ? scrolledMobileLogo
+      : scrolledDesktopLogo
+
+  // Nav vertical padding
+  const navPy = scrolled ? 10 : 32 - scrollProgress * 22
 
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-[200] flex items-center transition-colors duration-500",
+        "fixed top-0 left-0 right-0 z-[200] flex items-center transition-all duration-500",
         scrolled
-          ? "justify-between border-b border-foreground/[0.06]"
+          ? "justify-between"
           : "justify-center"
       )}
       style={{
-        padding: scrolled
-          ? "12px clamp(20px, 5vw, 40px)"
-          : `${32 - scrollProgress * 20}px clamp(20px, 5vw, 40px)`,
+        padding: `${navPy}px clamp(16px, 4vw, 40px)`,
         transitionTimingFunction: "cubic-bezier(0.22,1,0.36,1)",
         ...(scrolled
           ? {
-              background: "rgba(10,10,10,0.85)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
+              background: "rgba(255,255,255,0.04)",
+              backdropFilter: "blur(40px) saturate(1.4)",
+              WebkitBackdropFilter: "blur(40px) saturate(1.4)",
+              borderBottom: "1px solid rgba(255,255,255,0.08)",
+              boxShadow:
+                "0 4px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)",
             }
           : {}),
       }}
     >
-      {/* Logo image */}
+      {/* Logo */}
       <div
-        className="transition-none flex-shrink-0"
+        className="flex-shrink-0 transition-all duration-500"
         style={{
           width: `${logoWidth}px`,
           height: `${logoHeight}px`,
+          transitionTimingFunction: "cubic-bezier(0.22,1,0.36,1)",
         }}
       >
         <Image
-          src="/images/oddsmate-logo.png"
+          src={currentLogo}
           alt="ODDS/MATE"
-          width={280}
-          height={62}
+          width={420}
+          height={230}
           priority
-          className="w-full h-full object-contain"
-          style={{ filter: "brightness(0.9)" }}
+          className="w-full h-full object-contain transition-opacity duration-300"
+          style={{ filter: isHero ? "brightness(1)" : "brightness(0.92)" }}
         />
       </div>
 
       {/* CTA button */}
       <button
-        onClick={scrollToWaitlist}
+        onClick={openViralLoopsPopup}
         className={cn(
-          "font-sans text-[0.85rem] font-bold tracking-[0.05em] uppercase cursor-pointer transition-all duration-300 rounded-full border",
+          "font-sans tracking-[0.06em] uppercase cursor-pointer transition-all duration-500 rounded-full border font-bold whitespace-nowrap",
           scrolled
-            ? "opacity-100 translate-x-0 pointer-events-auto px-6 py-2.5 bg-primary/20 border-primary/40 text-foreground hover:bg-primary/30 hover:border-primary/60 hover:shadow-[0_0_20px_rgba(156,132,163,0.3)]"
-            : "opacity-0 translate-x-2.5 pointer-events-none absolute right-10 max-md:right-5 px-6 py-2.5 bg-transparent border-transparent text-foreground"
+            ? cn(
+                "opacity-100 translate-x-0 pointer-events-auto bg-primary/20 border-primary/50 text-foreground hover:bg-primary/30 hover:border-primary/60 hover:shadow-[0_0_24px_rgba(156,132,163,0.35)]",
+                isMobile
+                  ? "text-[0.7rem] px-4 py-2"
+                  : "text-[0.85rem] px-7 py-2.5"
+              )
+            : "opacity-0 translate-x-2.5 pointer-events-none absolute right-10 max-md:right-4 text-[0.85rem] px-7 py-2.5 bg-transparent border-transparent text-foreground"
         )}
       >
         Get Access

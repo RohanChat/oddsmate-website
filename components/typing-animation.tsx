@@ -47,15 +47,16 @@ export function TypingAnimation() {
 
   return (
     <div
-      className="text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.15] font-medium tracking-[-0.04em]"
-      style={{ minHeight: "2.3em" }}
+      className="text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.15] font-medium tracking-[-0.04em] h-[3.45em] max-md:h-[4.6em] flex items-end"
     >
-      <span className="text-primary/55">{"Hi mate, "}</span>
-      <span className="text-foreground">{displayText}</span>
-      <span
-        className="inline-block w-3 bg-primary rounded-sm opacity-70 animate-blink align-baseline relative top-[0.08em] ml-1"
-        style={{ height: "0.85em" }}
-      />
+      <div>
+        <span className="text-primary/55">{"Hi mate, "}</span>
+        <span className="text-foreground">{displayText}</span>
+        <span
+          className="inline-block w-3 bg-primary rounded-sm opacity-70 animate-blink align-baseline relative top-[0.08em] ml-1"
+          style={{ height: "0.85em" }}
+        />
+      </div>
     </div>
   )
 }

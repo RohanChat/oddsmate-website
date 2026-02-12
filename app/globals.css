@@ -51,6 +51,22 @@
   scrollbar-width: none;
 }
 
+/* Mobile ambient gradient drift */
+@keyframes mobileGradientDrift {
+  0% {
+    background-position: 30% 40%, 70% 60%;
+    transform: scale(1);
+  }
+  50% {
+    background-position: 60% 30%, 40% 70%;
+    transform: scale(1.05);
+  }
+  100% {
+    background-position: 40% 60%, 60% 35%;
+    transform: scale(1);
+  }
+}
+
 /* Cursor blink animation */
 @keyframes blink {
   0%, 100% { opacity: 0.7; }

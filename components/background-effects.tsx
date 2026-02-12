@@ -46,6 +46,18 @@ export function BackgroundEffects() {
         style={{ opacity: 0 }}
       />
 
+      {/* Mobile-only: slow-drifting ambient gradient */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0 md:hidden"
+        style={{
+          background: `
+            radial-gradient(circle at 30% 40%, rgba(156,132,163,0.14) 0%, transparent 50%),
+            radial-gradient(circle at 70% 60%, rgba(140,100,180,0.10) 0%, transparent 50%)
+          `,
+          animation: "mobileGradientDrift 15s ease-in-out infinite alternate",
+        }}
+      />
+
       {/* Grid overlay */}
       <div
         className="fixed inset-0 pointer-events-none z-0 opacity-40"

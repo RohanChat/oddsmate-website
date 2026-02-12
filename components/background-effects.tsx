@@ -58,18 +58,6 @@ export function BackgroundEffects() {
         }}
       />
 
-      {/* Mobile-only: faint logo watermark */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0 md:hidden flex items-center justify-center"
-      >
-        <img
-          src="/images/oddsmate-logo-overlay.png"
-          alt=""
-          className="w-[300px] h-auto"
-          style={{ opacity: 0.035 }}
-        />
-      </div>
-
       {/* Grid overlay */}
       <div
         className="fixed inset-0 pointer-events-none z-0 opacity-40"

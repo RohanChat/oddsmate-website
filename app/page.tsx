@@ -23,7 +23,7 @@ export default function Page() {
         <WaitlistSection />
 
         <footer className="py-10 flex justify-center text-[0.8rem] text-muted-foreground relative z-[1]">
-          <div>&copy; 2025 ODDS/MATE INTELLIGENCE</div>
+          <div>&copy; 2026 ODDSMATE Inc. All rights reserved.</div>
         </footer>
       </div>
 

@@ -7,17 +7,11 @@ export function WaitlistSection() {
       className="py-[100px] px-6 text-center relative z-[1] max-md:py-12 max-md:px-3"
     >
       <div className="max-w-[600px] mx-auto">
-        <div className="text-[0.75rem] font-bold tracking-[2px] uppercase text-primary mb-3 max-md:text-[0.65rem] max-md:mb-2">
+        <h2 className="text-[clamp(1.8rem,4vw,3rem)] font-bold tracking-[-1.5px] text-foreground mb-3 leading-[1.1] max-md:text-[1.5rem] max-md:mb-2">
           Early Access
-        </div>
-        <h2 className="text-[clamp(1.8rem,4vw,3rem)] font-semibold tracking-[-1.5px] text-foreground mb-3 leading-[1.1] max-md:text-[1.5rem] max-md:mb-2">
-          {"Get your edge"}
-          <br />
-          {"before everyone else"}
         </h2>
         <p className="text-[1.05rem] leading-relaxed text-muted-foreground mb-8 max-md:mb-5 max-md:text-[0.8rem] max-md:leading-normal">
-          Join the waitlist for priority access to your personal prediction
-          market AI mate.
+          {"Join the waitlist for a chance to win $1K. Yes, really."}
         </p>
 
         <div

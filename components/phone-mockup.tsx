@@ -49,6 +49,44 @@ const screens = [
     ],
   },
   {
+    inputText: "Ask about any market...",
+    messages: [
+      { type: "user", text: "Which way should I trade on the fed decision?" },
+      { type: "ai", text: "Analyzing historical data..." },
+      {
+        type: "data",
+        header: "Fed Rate Decision Analysis",
+        rows: [
+          {
+            label: "GDP Slowdown Cuts",
+            value: "14/18 (78%)",
+            variant: "up" as const,
+          },
+          {
+            label: "Best Odds",
+            value: "Polymarket 62c",
+            variant: "up" as const,
+          },
+          {
+            label: "Kalshi",
+            value: "58c",
+            variant: "neutral" as const,
+          },
+          {
+            label: "Expected Value",
+            value: "+$0.16/share",
+            variant: "up" as const,
+            highlight: true,
+          },
+        ],
+      },
+      {
+        type: "ai",
+        text: "The Fed has cut 14 of 18 times when GDP slowed. Polymarket has the best odds at 62c.",
+      },
+    ],
+  },
+  {
     inputText: "Execute trade for 500 USDC...",
     messages: [
       { type: "user", text: "Execute the arb we discussed" },

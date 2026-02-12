@@ -6,27 +6,33 @@ import { PhoneMockup } from "./phone-mockup"
 
 const features = [
   {
-    number: "01 / Search",
-    title: "On-demand\npricing",
+    number: "01 / Ask",
+    title: "Every market.\nOne text.",
     description:
-      "No more trawling through endless screens. Just ask for the markets and parlays you want — your mate finds the best lines instantly.",
+      "Just ask your mate what you want. Best odds across every exchange, in seconds.",
   },
   {
     number: "02 / Alerts",
-    title: "Get notified of\nopportunities",
+    title: "First to know.",
     description:
-      "Your mate pings you when there's breaking news on your market, or when significant whale activity or potential insider movement is detected.",
+      "Whale trades, insider bets, volume spikes — pushed to your lock screen before it's priced in.",
   },
   {
-    number: "03 / Execute",
-    title: "Execute straight\nfrom chat",
+    number: "03 / Analysis",
+    title: "Quant in your\npocket.",
     description:
-      "Place trades, manage positions, and track performance without ever leaving your messages.",
+      "Your mate pulls the data, spots the patterns, and gives you the analysis that matters.",
+  },
+  {
+    number: "04 / Execute",
+    title: "Trade from\nyour texts.",
+    description:
+      "From signal to settlement without leaving your messages.",
     badge: "Coming Soon",
   },
 ]
 
-const NUM_FEATURES = 3
+const NUM_FEATURES = 4
 const SCROLL_PX_PER_FEATURE = 160
 const TOUCH_PX_PER_FEATURE = 80
 const TRANSITION_MS = 550
@@ -279,8 +285,9 @@ export function FeaturesSection() {
                       : "translateY(30px)",
               }}
             >
-              <div className="text-[1.1rem] text-primary font-black tracking-[2.5px] uppercase mb-4 max-md:text-[0.9rem] max-md:mb-2 max-md:tracking-[2px]">
-                {feature.number}
+              <div className="text-[1.1rem] text-primary tracking-[2.5px] uppercase mb-4 max-md:text-[0.9rem] max-md:mb-2 max-md:tracking-[2px]">
+                <span className="font-black">{feature.number.split(" / ")[0]} /</span>{" "}
+                <span className="font-semibold">{feature.number.split(" / ")[1]}</span>
               </div>
               <h2 className="text-[clamp(2.2rem,3.5vw,3.5rem)] leading-[1.05] tracking-[-1.5px] font-bold text-foreground mb-4 whitespace-pre-line max-md:text-[1.6rem] max-md:mb-2 max-md:leading-[1.1]">
                 {feature.title}
@@ -313,7 +320,7 @@ export function FeaturesSection() {
             : "opacity-0 pointer-events-none"
         )}
       >
-        {[0, 1, 2].map((idx) => (
+        {[0, 1, 2, 3].map((idx) => (
           <button
             key={idx}
             onClick={() => {

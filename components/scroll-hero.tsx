@@ -72,7 +72,7 @@ const CP_X = 0.46
 /* Number of virtual "screens" of scroll */
 const NUM_PHASES = 8
 
-const WORDS_RAW: { t?: string; br?: boolean; big?: boolean; white?: boolean }[] = [
+const WORDS_RAW: { t?: string; br?: boolean; big?: boolean; white?: boolean; transparent?: boolean }[] = [
   { t: "Prediction" },
   { t: "markets" },
   { t: "are" },
@@ -92,8 +92,8 @@ const WORDS_RAW: { t?: string; br?: boolean; big?: boolean; white?: boolean }[] 
   { t: "to" },
   { t: "lose." },
   { br: true },
-  { t: "Until", big: true, white: true },
-  { t: "now.", big: true, white: true },
+  { t: "Until", big: true, white: true, transparent: true },
+  { t: "now.", big: true, white: true, transparent: true },
 ]
 
 interface MsgDef {
@@ -398,7 +398,7 @@ export function ScrollHero() {
         ref={(el) => {
           if (el) wordRefs.current[idx] = el
         }}
-        className={`sh-hw${w.big ? " sh-hw-big" : ""}`}
+        className={`sh-hw${w.big ? " sh-hw-big" : ""}${w.transparent ? " sh-hw-transparent" : ""}`}
       >
         {w.t}
       </span>
@@ -585,7 +585,7 @@ export function ScrollHero() {
                 height={200}
                 priority
                 className="w-full h-auto max-w-[clamp(240px,45vw,520px)] object-contain"
-                style={{ filter: "brightness(1.15)" }}
+                style={{ filter: "brightness(1.3) contrast(1.1)" }}
               />
             </div>
             <div className="sh-intro-sub">

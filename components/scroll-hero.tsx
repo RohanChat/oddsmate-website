@@ -345,9 +345,9 @@ export function ScrollHero() {
     })
 
     /* ─── INTRO LAYER ─── */
-    /* Fade in: 0.82 → 0.90, hold: 0.90 → 0.93, fade out: 0.93 → 1.0 */
+    /* Fade in: 0.82 → 0.90, hold: 0.90 → 0.96, fade out: 0.96 → 1.0 */
     const introIn = clamp01((progress - 0.82) / 0.08)
-    const introOut = clamp01((progress - 0.93) / 0.07)
+    const introOut = clamp01((progress - 0.96) / 0.04)
     const introOpacity = introIn * (1 - introOut)
     const introScale = 1 - introOut * 0.08
     const introBlur = introOut * 12

@@ -24,9 +24,7 @@ export default function Page() {
       </div>
 
       {/* Full-width scroll-locked hero section */}
-      <div className="relative z-[2]">
-        <ScrollHero />
-      </div>
+      <ScrollHero />
 
       {/* Features + rest of content in constrained container */}
       <div className="relative z-[1] w-full max-w-[1200px] mx-auto px-10 max-md:px-5">

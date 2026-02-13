@@ -131,7 +131,7 @@
   display: inline-block;
   font-size: clamp(1.3rem, 3.2vw, 2.4rem);
   font-weight: 600;
-  color: rgba(255,255,255,0.11);
+  color: rgba(255,255,255,0.06);
   margin-right: 0.3em;
   margin-bottom: 0.15em;
   letter-spacing: -0.02em;
@@ -310,11 +310,12 @@
 .sh-m-row {
   display: flex;
   justify-content: space-between;
-  font-size: 0.65rem;
-  padding: 3.5px 0;
+  font-size: 0.7rem;
+  padding: 4px 0;
 }
-.sh-m-row .sh-label {
-  opacity: 0.55;
+.sh-m-row .sh-label-bold {
+  color: rgba(255,255,255,0.95);
+  font-weight: 700;
 }
 .sh-m-row .sh-val {
   font-weight: 600;
@@ -323,7 +324,16 @@
   color: #2ecc71;
 }
 .sh-m-row .sh-val-white {
-  color: rgba(240,240,240,0.9);
+  color: rgba(240,240,240,0.95);
+}
+.sh-m-verdict {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(156,132,163,0.12);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.95);
+  font-weight: 600;
 }
 
 .sh-msg-typing .sh-msg-card {
@@ -369,12 +379,10 @@
 }
 .sh-intro-blur {
   position: absolute;
-  inset: -30%;
-  background: rgba(10,10,10,0.7);
-  backdrop-filter: blur(80px) saturate(1.2);
-  -webkit-backdrop-filter: blur(80px) saturate(1.2);
-  mask-image: radial-gradient(ellipse 50% 45% at center, black 45%, transparent 72%);
-  -webkit-mask-image: radial-gradient(ellipse 50% 45% at center, black 45%, transparent 72%);
+  inset: -10%;
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(60px) saturate(1.2);
+  -webkit-backdrop-filter: blur(60px) saturate(1.2);
 }
 .sh-intro-content {
   position: relative;
@@ -382,25 +390,28 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 4px;
   padding: 0 24px;
 }
 .sh-intro-label {
-  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
-  font-weight: 700;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 8px;
-  color: rgba(156,132,163,0.8);
-  margin-bottom: 16px;
+  letter-spacing: 10px;
+  color: rgba(156,132,163,0.9);
+  margin-bottom: 8px;
 }
 .sh-intro-logo {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0;
+  padding: 0;
 }
 .sh-intro-sub {
   font-size: clamp(0.95rem, 1.8vw, 1.25rem);
   color: rgba(217,215,215,0.82);
-  margin-top: 22px;
+  margin-top: 10px;
   max-width: 580px;
   line-height: 1.7;
   text-align: center;
@@ -448,8 +459,9 @@
     margin-top: 14px;
   }
   .sh-intro-label {
-    font-size: 0.7rem;
-    letter-spacing: 5px;
+    font-size: 0.9rem;
+    letter-spacing: 6px;
+    font-weight: 800;
   }
 }
 

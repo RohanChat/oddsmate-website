@@ -69,6 +69,9 @@ const GH = 400
 const PAD = 15
 const CP_X = 0.46
 
+/* Number of virtual "screens" of scroll */
+const NUM_PHASES = 8
+
 const WORDS_RAW: { t?: string; br?: boolean; big?: boolean; white?: boolean }[] = [
   { t: "Prediction" },
   { t: "markets" },
@@ -128,7 +131,7 @@ const MSGS: MsgDef[] = [
       { l: "Sharp Money", v: "68% buying YES", c: "green" },
       { l: "Historical", v: "31% make playoffs from here", c: "white" },
     ],
-    text: "4.5:1 on a 3:1 historical shot. I'd buy.",
+    text: "4.5:1 on a 3:1 historical shot. I\u2019d buy.",
     at: 0.52,
   },
 ]
@@ -145,10 +148,13 @@ function toPath(pts: [number, number][], count: number) {
   return d
 }
 
+function clamp01(v: number) {
+  return Math.max(0, Math.min(1, v))
+}
+
 /* ── component ── */
 export function ScrollHero() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const pinnedRef = useRef<HTMLDivElement>(null)
   const textLayerRef = useRef<HTMLDivElement>(null)
   const graphLayerRef = useRef<HTMLDivElement>(null)
   const introLayerRef = useRef<HTMLDivElement>(null)
@@ -170,71 +176,68 @@ export function ScrollHero() {
 
   const [isMobile, setIsMobile] = useState(false)
 
-  /* timing */
-  const T_TEXT = 1400
-  const T_HOLD = 400
-  const T_GPRE = 3200
-  const T_STICKY = 2000
-  const T_GPOST = 1800
-  const T_INTRO = 2000
-  const TOTAL = T_TEXT + T_HOLD + T_GPRE + T_STICKY + T_GPOST + T_INTRO
-
-  const GSTART = T_TEXT + T_HOLD
-  const SSTART = GSTART + T_GPRE
-  const G2START = SSTART + T_STICKY
-  const ISTART = G2START + T_GPOST
-
   const update = useCallback(() => {
     const container = containerRef.current
-    const pinned = pinnedRef.current
-    if (!container || !pinned) return
+    if (!container) return
 
     const rect = container.getBoundingClientRect()
-    const sy = Math.max(0, -rect.top)
+    const vh = window.innerHeight
+    const containerH = container.offsetHeight
+    const scrolled = -rect.top
+    const scrollableRange = containerH - vh
 
-    /* pin logic */
-    if (sy < TOTAL - window.innerHeight) {
-      pinned.style.cssText =
-        "position:absolute;top:" + sy + "px;left:0;right:0;height:100vh;overflow:hidden;background:hsl(0 0% 4%)"
-    } else {
-      pinned.style.cssText =
-        "position:absolute;bottom:0;left:0;right:0;height:100vh;overflow:hidden;background:hsl(0 0% 4%)"
-    }
+    if (scrolled < 0 || scrolled > scrollableRange) return
 
-    /* word reveal */
-    const tp = Math.min(1, Math.max(0, sy / T_TEXT))
+    /* master progress 0..1 */
+    const progress = clamp01(scrolled / scrollableRange)
+
+    /*
+     * Phase mapping (using progress 0..1 across NUM_PHASES screens):
+     * 0.000 - 0.175  => Text reveal (phases 0-1.4)
+     * 0.175 - 0.225  => Hold text
+     * 0.225 - 0.500  => Graph pre + messages appear (phases 1.8-4)
+     * 0.500 - 0.700  => Sticky messages + graph continues (phases 4-5.6)
+     * 0.700 - 0.850  => Graph post (phases 5.6-6.8)
+     * 0.850 - 1.000  => Intro layer (phases 6.8-8)
+     */
+
+    /* ─── TEXT REVEAL ─── */
+    const textProgress = clamp01(progress / 0.175)
     const words = wordRefs.current
     for (let i = 0; i < words.length; i++) {
       if (!words[i]) continue
       const pos = i / words.length
       words[i].classList.remove("sh-on", "sh-on-white")
-      if (pos < tp) {
+      if (pos < textProgress) {
         const meta = WORDS_RAW.filter((w) => !w.br)[i]
         words[i].classList.add(meta?.white ? "sh-on-white" : "sh-on")
       }
     }
 
+    /* scroll cue fade */
     if (scrollCueRef.current)
-      scrollCueRef.current.style.opacity = String(Math.max(0, 1 - tp * 4))
+      scrollCueRef.current.style.opacity = String(clamp01(1 - textProgress * 4))
 
-    /* text → graph crossfade */
-    const gFade = Math.max(0, (sy - GSTART) / 300)
+    /* ─── TEXT → GRAPH CROSSFADE ─── */
+    const gFade = clamp01((progress - 0.18) / 0.08)
     if (textLayerRef.current) {
-      textLayerRef.current.style.opacity = String(Math.max(0, 1 - gFade * 2.5))
-      textLayerRef.current.style.transform = `translateY(${-Math.min(gFade, 1) * 40}px)`
+      textLayerRef.current.style.opacity = String(clamp01(1 - gFade * 2.5))
+      textLayerRef.current.style.transform = `translateY(${-clamp01(gFade) * 40}px)`
       textLayerRef.current.style.pointerEvents = gFade > 0.3 ? "none" : "auto"
     }
     if (graphLayerRef.current)
-      graphLayerRef.current.style.opacity = String(Math.min(1, gFade * 2))
+      graphLayerRef.current.style.opacity = String(clamp01(gFade * 2))
 
-    /* draw progress */
+    /* ─── GRAPH DRAW ─── */
     let draw = 0
-    if (sy < GSTART) draw = 0
-    else if (sy < SSTART) draw = ((sy - GSTART) / T_GPRE) * CP_X
-    else if (sy < G2START) draw = CP_X
-    else if (sy < ISTART) draw = CP_X + ((sy - G2START) / T_GPOST) * (1 - CP_X)
+    if (progress < 0.225) draw = 0
+    else if (progress < 0.5)
+      draw = ((progress - 0.225) / 0.275) * CP_X
+    else if (progress < 0.7) draw = CP_X
+    else if (progress < 0.85)
+      draw = CP_X + ((progress - 0.7) / 0.15) * (1 - CP_X)
     else draw = 1
-    draw = Math.min(1, Math.max(0, draw))
+    draw = clamp01(draw)
 
     const curveA = curveARef.current
     const curveB = curveBRef.current
@@ -255,7 +258,7 @@ export function ScrollHero() {
       areaPRef.current?.setAttribute("d", "")
     }
 
-    /* dot + tickers */
+    /* ─── DOT + TICKERS ─── */
     if (visA > 0 && draw > 0.003) {
       const ptA = curveA[visA - 1]
       const cx = ptA[0] * GW
@@ -299,10 +302,10 @@ export function ScrollHero() {
       tickerNoRef.current?.classList.remove("sh-ticker-visible")
     }
 
-    /* messages */
-    const preProg = Math.min(1, Math.max(0, (sy - GSTART) / T_GPRE))
-    const sp = Math.min(1, Math.max(0, (sy - SSTART) / T_STICKY))
-    const msgsActive = sy >= GSTART + T_GPRE * 0.25 && sy < ISTART + 400
+    /* ─── MESSAGES ─── */
+    const preProg = clamp01((progress - 0.225) / 0.275) // graph pre range
+    const sp = clamp01((progress - 0.5) / 0.2)          // sticky range
+    const msgsActive = progress >= 0.28 && progress < 0.88
     if (msgAreaRef.current) msgAreaRef.current.style.opacity = msgsActive ? "1" : "0"
 
     const msgEls = msgElRefs.current
@@ -310,7 +313,7 @@ export function ScrollHero() {
       const el = msgEls[i]
       if (!el) return
       if (m.phase === "pre") {
-        if (preProg >= (m.preAt ?? 0) && sy < G2START) {
+        if (preProg >= (m.preAt ?? 0) && progress < 0.7) {
           if (m.collapseInSticky !== undefined && sp >= m.collapseInSticky) {
             el.classList.remove("sh-msg-show")
             el.classList.add("sh-msg-collapse")
@@ -318,7 +321,7 @@ export function ScrollHero() {
             el.classList.add("sh-msg-show")
             el.classList.remove("sh-msg-collapse")
           }
-        } else if (sy >= G2START) {
+        } else if (progress >= 0.7) {
           if (m.type === "typing") {
             el.classList.remove("sh-msg-show")
             el.classList.add("sh-msg-collapse")
@@ -340,15 +343,15 @@ export function ScrollHero() {
       }
     })
 
-    /* intro layer */
-    const ip = Math.min(1, Math.max(0, (sy - ISTART) / (T_INTRO * 0.5)))
+    /* ─── INTRO LAYER ─── */
+    const ip = clamp01((progress - 0.85) / 0.1)
     if (introLayerRef.current) {
       introLayerRef.current.style.opacity = String(ip)
       introLayerRef.current.style.transform = `translateY(${(1 - ip) * 60}px)`
     }
     if (ip > 0 && msgAreaRef.current)
-      msgAreaRef.current.style.opacity = String(Math.max(0, 1 - ip * 1.5))
-  }, [GSTART, SSTART, G2START, ISTART, TOTAL, T_TEXT, T_GPRE, T_STICKY, T_GPOST, T_INTRO])
+      msgAreaRef.current.style.opacity = String(clamp01(1 - ip * 1.5))
+  }, [])
 
   useEffect(() => {
     function checkMobile() {
@@ -468,7 +471,7 @@ export function ScrollHero() {
             <div className="sh-m-data">
               {m.rows?.map((r, ri) => (
                 <div key={ri} className="sh-m-row">
-                  <span className="sh-label">{r.l}</span>
+                  <span className="sh-label-bold">{r.l}</span>
                   <span className={`sh-val ${r.c === "green" ? "sh-val-green" : "sh-val-white"}`}>
                     {r.v}
                   </span>
@@ -476,14 +479,7 @@ export function ScrollHero() {
               ))}
             </div>
             {m.text && (
-              <div
-                className="sh-m-text"
-                style={{
-                  marginTop: 10,
-                  paddingTop: 10,
-                  borderTop: "1px solid rgba(156,132,163,0.12)",
-                }}
-              >
+              <div className="sh-m-verdict">
                 {m.text}
               </div>
             )}
@@ -497,10 +493,10 @@ export function ScrollHero() {
   return (
     <div
       ref={containerRef}
-      className="relative"
-      style={{ height: TOTAL + "px" }}
+      style={{ height: `${NUM_PHASES * 100}vh` }}
     >
-      <div ref={pinnedRef} className="absolute top-0 left-0 right-0 h-screen overflow-hidden bg-background">
+      {/* Sticky pinned viewport - same pattern as FeaturesSection */}
+      <section className="sticky top-0 h-screen overflow-hidden">
         {/* Glow orb */}
         <div className="sh-glow-orb" />
 
@@ -588,7 +584,7 @@ export function ScrollHero() {
                 width={800}
                 height={200}
                 priority
-                className="w-full h-auto max-w-[clamp(280px,50vw,600px)] object-contain"
+                className="w-full h-auto max-w-[clamp(240px,45vw,520px)] object-contain"
                 style={{ filter: "brightness(1.15)" }}
               />
             </div>
@@ -598,7 +594,7 @@ export function ScrollHero() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   )
 }

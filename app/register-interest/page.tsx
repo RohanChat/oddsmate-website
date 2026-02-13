@@ -15,7 +15,7 @@ export default function RegisterInterestPage() {
       <BackgroundEffects />
       <RegisterInterestNav />
 
-      <div className="relative z-[1] flex min-h-screen flex-col items-center justify-center w-full max-w-[1200px] mx-auto px-10 max-md:px-5 pt-24">
+      <div className="relative z-[1] flex min-h-screen flex-col items-center justify-center w-full max-w-[1200px] mx-auto px-10 max-md:px-5 pt-16">
         <WaitlistSection />
 
         <footer className="py-10 flex justify-center text-[0.8rem] text-muted-foreground">

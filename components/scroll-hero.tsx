@@ -350,7 +350,7 @@ export function ScrollHero() {
     const introOut = clamp01((progress - 0.99) / 0.04)
     const introOpacity = introIn * (1 - introOut)
     const introScale = 1 - introOut * 0.08
-    const introBlur = introOut * 12
+    const introBlur = clamp01((progress - 0.985) / 0.08) * 12
 
     if (introLayerRef.current) {
       introLayerRef.current.style.opacity = String(introOpacity)

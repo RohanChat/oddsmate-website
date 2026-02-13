@@ -79,13 +79,14 @@ const WORDS_RAW: { t?: string; br?: boolean; big?: boolean; white?: boolean; tra
   { t: "rigged" },
   { t: "against" },
   { t: "us." },
-  { t: "Against" },
+  { t: "We're " },
+  { t: "fighting " },
   { t: "insiders," },
   { t: "whales," },
   { t: "and" },
   { t: "constantly" },
   { t: "changing" },
-  { t: "information," },
+  { t: "information..." },
   { t: "we're" },
   { t: "almost" },
   { t: "doomed" },
@@ -252,7 +253,7 @@ export function ScrollHero() {
       areaPRef.current?.setAttribute(
         "d",
         toPath(curveA, visA) +
-          `L${last[0] * GW},${GH - PAD}L${curveA[0][0] * GW},${GH - PAD}Z`
+        `L${last[0] * GW},${GH - PAD}L${curveA[0][0] * GW},${GH - PAD}Z`
       )
     } else {
       areaPRef.current?.setAttribute("d", "")

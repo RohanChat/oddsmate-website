@@ -26,14 +26,6 @@ export default function Page() {
       {/* Full-width scroll-locked hero section */}
       <ScrollHero />
 
-      {/* Purple-to-dark transition bridge */}
-      <div
-        className="relative z-[3] h-[50vh] -mt-[1px]"
-        style={{
-          background: "linear-gradient(to bottom, #9c84a3 0%, #7a6680 20%, #4a3d50 45%, hsl(0 0% 4%) 100%)",
-        }}
-      />
-
       {/* Features + rest of content in constrained container */}
       <div className="relative z-[1] w-full max-w-[1200px] mx-auto px-10 max-md:px-5">
         <FeaturesSection />

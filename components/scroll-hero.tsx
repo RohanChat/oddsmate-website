@@ -70,7 +70,7 @@ const PAD = 15
 const CP_X = 0.46
 
 /* Number of virtual "screens" of scroll */
-const NUM_PHASES = 8
+const NUM_PHASES = 9
 
 const WORDS_RAW: { t?: string; br?: boolean; big?: boolean; white?: boolean; transparent?: boolean }[] = [
   { t: "Prediction" },
@@ -344,13 +344,20 @@ export function ScrollHero() {
     })
 
     /* ─── INTRO LAYER ─── */
-    const ip = clamp01((progress - 0.85) / 0.1)
+    /* Fade in: 0.82 → 0.90, hold: 0.90 → 0.93, fade out: 0.93 → 1.0 */
+    const introIn = clamp01((progress - 0.82) / 0.08)
+    const introOut = clamp01((progress - 0.93) / 0.07)
+    const introOpacity = introIn * (1 - introOut)
+    const introScale = 1 - introOut * 0.08
+    const introBlur = introOut * 12
+
     if (introLayerRef.current) {
-      introLayerRef.current.style.opacity = String(ip)
-      introLayerRef.current.style.transform = `translateY(${(1 - ip) * 60}px)`
+      introLayerRef.current.style.opacity = String(introOpacity)
+      introLayerRef.current.style.transform = `translateY(${(1 - introIn) * 60}px) scale(${introScale})`
+      introLayerRef.current.style.filter = introBlur > 0 ? `blur(${introBlur}px)` : "none"
     }
-    if (ip > 0 && msgAreaRef.current)
-      msgAreaRef.current.style.opacity = String(clamp01(1 - ip * 1.5))
+    if (introIn > 0 && msgAreaRef.current)
+      msgAreaRef.current.style.opacity = String(clamp01(1 - introIn * 1.5))
   }, [])
 
   useEffect(() => {
@@ -589,7 +596,7 @@ export function ScrollHero() {
               />
             </div>
             <div className="sh-intro-sub">
-              A conversational AI agent built for prediction markets. Real-time
+              A conversational AI built for prediction markets. Real-time
               odds. Insider-level intelligence.
             </div>
           </div>

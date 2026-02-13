@@ -193,11 +193,11 @@
 }
 .sh-graph-svg {
   width: 100%;
-  height: 50%;
+  height: 46%;
   position: absolute;
-  top: 55%;
+  top: 60%;
   left: 0;
-  transform: translateY(-40%);
+  transform: translateY(-38%);
 }
 
 .sh-ticker {
@@ -383,9 +383,9 @@
 .sh-intro-blur {
   position: absolute;
   inset: -10%;
-  background: #9c84a3;
-  backdrop-filter: blur(60px) saturate(1.2);
-  -webkit-backdrop-filter: blur(60px) saturate(1.2);
+  background: rgba(10,10,10,0.6);
+  backdrop-filter: blur(80px) saturate(1.4);
+  -webkit-backdrop-filter: blur(80px) saturate(1.4);
 }
 .sh-intro-content {
   position: relative;
@@ -401,7 +401,7 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 10px;
-  color: rgba(255,255,255,0.95);
+  color: hsl(var(--primary));
   margin-bottom: 8px;
 }
 .sh-intro-logo {
@@ -413,7 +413,7 @@
 }
 .sh-intro-sub {
   font-size: clamp(0.95rem, 1.8vw, 1.25rem);
-  color: rgba(255,255,255,0.75);
+  color: rgba(217,215,215,0.82);
   margin-top: 10px;
   max-width: 580px;
   line-height: 1.7;
@@ -433,27 +433,36 @@
     height: 18px;
   }
   .sh-graph-svg {
-    height: 45%;
-    top: 58%;
-    transform: translateY(-38%);
+    height: 42%;
+    top: 62%;
+    transform: translateY(-36%);
   }
   .sh-msg-area {
-    max-width: 95%;
-    width: 95%;
-    top: 38%;
-    gap: 10px;
+    max-width: 82%;
+    width: 82%;
+    top: 36%;
+    gap: 8px;
   }
   .sh-msg-card {
-    padding: 11px 14px;
+    padding: 10px 12px;
+  }
+  .sh-msg-user .sh-msg-card {
+    max-width: 80%;
+  }
+  .sh-msg-ai .sh-msg-card {
+    max-width: 85%;
   }
   .sh-m-text {
-    font-size: 0.66rem;
+    font-size: 0.62rem;
   }
   .sh-m-row {
-    font-size: 0.6rem;
+    font-size: 0.56rem;
   }
   .sh-m-label {
-    font-size: 0.44rem;
+    font-size: 0.42rem;
+  }
+  .sh-m-verdict {
+    font-size: 0.62rem;
   }
   .sh-ticker {
     font-size: 0.48rem;
@@ -467,7 +476,6 @@
     font-size: 1rem;
     letter-spacing: 6px;
     font-weight: 900;
-    color: rgba(255,255,255,0.95);
   }
 }
 
@@ -506,5 +514,3 @@ form-widget * {
     font-size: 0.85rem !important;
   }
 }
-
-

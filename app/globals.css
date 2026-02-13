@@ -424,13 +424,13 @@
   .sh-hw {
     font-size: clamp(1rem, 5vw, 1.5rem);
     margin-right: 0.22em;
-    margin-bottom: 0.25em;
+    margin-bottom: 0.1em;
   }
   .sh-hw-big {
     font-size: clamp(1.4rem, 6.5vw, 2.2rem);
   }
   .sh-hw-break {
-    height: 24px;
+    height: 18px;
   }
   .sh-graph-svg {
     height: 42%;

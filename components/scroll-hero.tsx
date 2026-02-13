@@ -79,14 +79,13 @@ const WORDS_RAW: { t?: string; br?: boolean; big?: boolean; white?: boolean; tra
   { t: "rigged" },
   { t: "against" },
   { t: "us." },
-  { t: "We're " },
-  { t: "fighting " },
+  { t: "Against" },
   { t: "insiders," },
   { t: "whales," },
   { t: "and" },
   { t: "constantly" },
   { t: "changing" },
-  { t: "information..." },
+  { t: "information," },
   { t: "we're" },
   { t: "almost" },
   { t: "doomed" },
@@ -253,7 +252,7 @@ export function ScrollHero() {
       areaPRef.current?.setAttribute(
         "d",
         toPath(curveA, visA) +
-        `L${last[0] * GW},${GH - PAD}L${curveA[0][0] * GW},${GH - PAD}Z`
+          `L${last[0] * GW},${GH - PAD}L${curveA[0][0] * GW},${GH - PAD}Z`
       )
     } else {
       areaPRef.current?.setAttribute("d", "")
@@ -345,12 +344,12 @@ export function ScrollHero() {
     })
 
     /* ─── INTRO LAYER ─── */
-    /* Fade in: 0.82 → 0.90, hold: 0.90 → 0.96, fade out: 0.96 → 1.0 */
+    /* Fade in: 0.82 → 0.90, hold: 0.90 → 0.93, fade out: 0.93 → 1.0 */
     const introIn = clamp01((progress - 0.82) / 0.08)
-    const introOut = clamp01((progress - 0.99) / 0.04)
+    const introOut = clamp01((progress - 0.93) / 0.07)
     const introOpacity = introIn * (1 - introOut)
     const introScale = 1 - introOut * 0.08
-    const introBlur = clamp01((progress - 0.985) / 0.08) * 12
+    const introBlur = introOut * 12
 
     if (introLayerRef.current) {
       introLayerRef.current.style.opacity = String(introOpacity)

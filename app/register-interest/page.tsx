@@ -4,9 +4,29 @@ import { RegisterInterestNav } from "@/components/register-interest-nav"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Register Interest - ODDS/MATE",
-  description:
-    "Join the ODDS/MATE early access waitlist for a chance to win $1K.",
+  title: "Early Access Waitlist.",
+  description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
+  openGraph: {
+    title: "Early Access Waitlist.",
+    description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
+    url: "https://oddsmate.ai/register-interest",
+    siteName: "ODDS/MATE",
+    images: [
+      {
+        url: "https://oddsmate.ai/og-register-interest.png",
+        width: 1200,
+        height: 630,
+        alt: "Early Access to ODDS/MATE",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Early Access Waitlist.",
+    description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
+    images: ["https://oddsmate.ai/og-register-interest.png"],
+  },
 }
 
 export default function RegisterInterestPage() {

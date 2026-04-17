@@ -9,11 +9,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Early Access Waitlist.",
     description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
-    url: "https://oddsmate.ai/register-interest",
+    url: "https://www.oddsmate.ai/register-interest",
     siteName: "ODDS/MATE",
     images: [
       {
-        url: "https://oddsmate.ai/og-register-interest.png",
+        url: "https://www.oddsmate.ai/og-register-interest.png",
         width: 1200,
         height: 630,
         alt: "Early Access to ODDS/MATE",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Early Access Waitlist.",
     description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
-    images: ["https://oddsmate.ai/og-register-interest.png"],
+    images: ["https://www.oddsmate.ai/og-register-interest.png"],
   },
 }
 

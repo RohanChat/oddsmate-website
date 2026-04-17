@@ -18,11 +18,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "The Bloomberg Terminal for Prediction Markets.",
     description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
-    url: "https://oddsmate.ai",
+    url: "https://www.oddsmate.ai",
     siteName: "ODDS/MATE",
     images: [
       {
-        url: "https://oddsmate.ai/mockup-preview.png",
+        url: "https://www.oddsmate.ai/mockup-preview.png",
         width: 1200,
         height: 630,
         alt: "ODDS/MATE - The Bloomberg Terminal for Prediction Markets",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "The Bloomberg Terminal for Prediction Markets.",
     description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
-    images: ["https://oddsmate.ai/mockup-preview.png"],
+    images: ["https://www.oddsmate.ai/mockup-preview.png"],
   },
 }
 

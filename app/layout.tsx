@@ -10,6 +10,11 @@ const victorMono = Victor_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.VERCEL_PROJECT_PRODUCTION_URL 
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` 
+    : process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : 'https://www.oddsmate.ai'),
   title: "ODDS/MATE - The Bloomberg Terminal for Prediction Markets.",
   description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
   icons: {
@@ -22,7 +27,7 @@ export const metadata: Metadata = {
     siteName: "ODDS/MATE",
     images: [
       {
-        url: "https://www.oddsmate.ai/mockup-preview-og.png",
+        url: "/mockup-preview-og.png",
         width: 1200,
         height: 630,
         alt: "ODDS/MATE - The Bloomberg Terminal for Prediction Markets",
@@ -34,7 +39,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "The Bloomberg Terminal for Prediction Markets.",
     description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
-    images: ["https://www.oddsmate.ai/mockup-preview-og.png"],
+    images: ["/mockup-preview-og.png"],
   },
 }
 

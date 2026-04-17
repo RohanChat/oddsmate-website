@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     siteName: "ODDS/MATE",
     images: [
       {
-        url: "https://www.oddsmate.ai/og-register-interest-optimized.png",
+        url: "/og-register-interest-optimized.png",
         width: 1200,
         height: 630,
         alt: "Early Access to ODDS/MATE",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Early Access Waitlist.",
     description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
-    images: ["https://www.oddsmate.ai/og-register-interest-optimized.png"],
+    images: ["/og-register-interest-optimized.png"],
   },
 }
 

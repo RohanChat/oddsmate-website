@@ -9,33 +9,45 @@ const victorMono = Victor_Mono({
   weight: ['100', '200', '300', '400', '500', '600', '700'],
 })
 
-export const metadata: Metadata = {
-  title: "ODDS/MATE - The Bloomberg Terminal for Prediction Markets.",
-  description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
-  icons: {
-    icon: '/favicon.ico',
-  },
-  openGraph: {
-    title: "The Bloomberg Terminal for Prediction Markets.",
+function getBaseUrl() {
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`
+  }
+  return 'https://www.oddsmate.ai'
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const baseUrl = getBaseUrl()
+  
+  return {
+    metadataBase: new URL(baseUrl),
+    title: "ODDS/MATE - The Bloomberg Terminal for Prediction Markets.",
     description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
-    url: "https://oddsmate.ai",
-    siteName: "ODDS/MATE",
-    images: [
-      {
-        url: "https://oddsmate.ai/mockup-preview.png",
-        width: 1200,
-        height: 630,
-        alt: "ODDS/MATE - The Bloomberg Terminal for Prediction Markets",
-      },
-    ],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "The Bloomberg Terminal for Prediction Markets.",
-    description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
-    images: ["https://oddsmate.ai/mockup-preview.png"],
-  },
+    icons: {
+      icon: '/favicon.ico',
+    },
+    openGraph: {
+      title: "The Bloomberg Terminal for Prediction Markets.",
+      description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
+      url: "https://www.oddsmate.ai",
+      siteName: "ODDS/MATE",
+      images: [
+        {
+          url: `${baseUrl}/mockup-preview-og.png`,
+          width: 1200,
+          height: 630,
+          alt: "ODDS/MATE - The Bloomberg Terminal for Prediction Markets",
+        },
+      ],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "The Bloomberg Terminal for Prediction Markets.",
+      description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
+      images: [`${baseUrl}/mockup-preview-og.png`],
+    },
+  }
 }
 
 

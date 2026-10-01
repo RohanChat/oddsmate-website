@@ -123,7 +123,7 @@
   will-change: transform, opacity;
 }
 .sh-hero-text {
-  max-width: 850px;
+  max-width: 1040px;
   text-align: center;
   line-height: 1.55;
 }
@@ -151,8 +151,11 @@
 .sh-hw-break {
   display: block;
   height: 28px;
-}
-.sh-hw-big {
+  }
+.sh-hw-break-tight {
+  height: 18px;
+  }
+  .sh-hw-big {
   font-size: clamp(1.8rem, 4.5vw, 3.4rem);
   font-weight: 700;
 }
@@ -430,7 +433,10 @@
     font-size: clamp(1.4rem, 6.5vw, 2.2rem);
   }
   .sh-hw-break {
-    height: 18px;
+  height: 18px;
+  }
+  .sh-hw-break-tight {
+  height: 12px;
   }
   .sh-graph-svg {
     height: 42%;

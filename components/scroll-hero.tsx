@@ -72,14 +72,14 @@ const CP_X = 0.46
 /* Number of virtual "screens" of scroll */
 const NUM_PHASES = 9
 
-const WORDS_RAW: { t?: string; br?: boolean; big?: boolean; white?: boolean; transparent?: boolean }[] = [
+const WORDS_RAW: { t?: string; br?: boolean; tight?: boolean; big?: boolean; white?: boolean; transparent?: boolean }[] = [
   { t: "Prediction" },
   { t: "markets" },
   { t: "have" },
   { t: "an" },
   { t: "information" },
   { t: "gap." },
-  { br: true },
+  { br: true, tight: true },
   { t: "Most" },
   { t: "of" },
   { t: "us" },
@@ -398,7 +398,9 @@ export function ScrollHero() {
   let wordIdx = 0
   WORDS_RAW.forEach((w, i) => {
     if (w.br) {
-      wordElements.push(<div key={`br-${i}`} className="sh-hw-break" />)
+      wordElements.push(
+        <div key={`br-${i}`} className={`sh-hw-break${w.tight ? " sh-hw-break-tight" : ""}`} />
+      )
       return
     }
     const idx = wordIdx++

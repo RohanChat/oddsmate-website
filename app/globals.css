@@ -152,10 +152,10 @@
   display: block;
   height: 28px;
   }
-  .sh-hw-break-tight {
-  height: 0;
+.sh-hw-break-tight {
+  height: 18px;
   }
-.sh-hw-big {
+  .sh-hw-big {
   font-size: clamp(1.8rem, 4.5vw, 3.4rem);
   font-weight: 700;
 }
@@ -436,7 +436,7 @@
   height: 18px;
   }
   .sh-hw-break-tight {
-  height: 0;
+  height: 12px;
   }
   .sh-graph-svg {
     height: 42%;

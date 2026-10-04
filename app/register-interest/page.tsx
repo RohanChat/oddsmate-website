@@ -3,30 +3,41 @@ import { WaitlistSection } from "@/components/waitlist-section"
 import { RegisterInterestNav } from "@/components/register-interest-nav"
 import type { Metadata } from "next"
 
-export const metadata: Metadata = {
-  title: "Early Access Waitlist.",
-  description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
-  openGraph: {
+function getBaseUrl() {
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`
+  }
+  return 'https://www.oddsmate.ai'
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const baseUrl = getBaseUrl()
+  
+  return {
     title: "Early Access Waitlist.",
     description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
-    url: "https://oddsmate.ai/register-interest",
-    siteName: "ODDS/MATE",
-    images: [
-      {
-        url: "https://oddsmate.ai/og-register-interest.png",
-        width: 1200,
-        height: 630,
-        alt: "Early Access to ODDS/MATE",
-      },
-    ],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Early Access Waitlist.",
-    description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
-    images: ["https://oddsmate.ai/og-register-interest.png"],
-  },
+    openGraph: {
+      title: "Early Access Waitlist.",
+      description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
+      url: "https://www.oddsmate.ai/register-interest",
+      siteName: "ODDS/MATE",
+      images: [
+        {
+          url: `${baseUrl}/og-register-interest-optimized.png`,
+          width: 1200,
+          height: 630,
+          alt: "Early Access to ODDS/MATE",
+        },
+      ],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Early Access Waitlist.",
+      description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
+      images: [`${baseUrl}/og-register-interest-optimized.png`],
+    },
+  }
 }
 
 export default function RegisterInterestPage() {

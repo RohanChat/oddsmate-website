@@ -10,31 +10,31 @@ const victorMono = Victor_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "ODDS/MATE - The Bloomberg Terminal for Prediction Markets.",
+  title: "ODDS/MATE - A Simpler Way to Trade Prediction Markets.",
   description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
   icons: {
     icon: '/favicon.ico',
   },
   openGraph: {
-    title: "The Bloomberg Terminal for Prediction Markets.",
+    title: "A Simpler Way to Trade Prediction Markets.",
     description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
     url: "https://oddsmate.ai",
     siteName: "ODDS/MATE",
     images: [
       {
-        url: "https://oddsmate.ai/mockup-preview.png",
+        url: "https://oddsmate.ai/og-home-simpler.png",
         width: 1200,
-        height: 630,
-        alt: "ODDS/MATE - The Bloomberg Terminal for Prediction Markets",
+        height: 600,
+        alt: "ODDS/MATE - A Simpler Way to Trade Prediction Markets",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Bloomberg Terminal for Prediction Markets.",
+    title: "A Simpler Way to Trade Prediction Markets.",
     description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
-    images: ["https://oddsmate.ai/mockup-preview.png"],
+    images: ["https://oddsmate.ai/og-home-simpler.png"],
   },
 }
 

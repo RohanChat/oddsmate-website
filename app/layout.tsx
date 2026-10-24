@@ -10,7 +10,7 @@ const victorMono = Victor_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "ODDS/MATE - The Bloomberg Terminal for Prediction Markets.",
+  title: "ODDS/MATE - A Simpler Way to Trade Prediction Markets.",
   description: "A conversational AI platform built for prediction markets. Real-time odds, insider-level intelligence.",
   icons: {
     icon: '/favicon.ico',

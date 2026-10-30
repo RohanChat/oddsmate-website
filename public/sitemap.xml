@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- What exists today: the single-page marketing site -->
+  <url>
+    <loc>https://www.oddsmate.ai/</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- ============================================================
+       PLANNED (not live yet - uncomment/add as pages ship)
+
+       Market pages (one per tradeable market, generated from live data):
+       <url><loc>https://www.oddsmate.ai/markets</loc><changefreq>hourly</changefreq><priority>0.9</priority></url>
+       <url><loc>https://www.oddsmate.ai/markets/politics</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+       <url><loc>https://www.oddsmate.ai/markets/sports</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+       <url><loc>https://www.oddsmate.ai/markets/crypto</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+       <url><loc>https://www.oddsmate.ai/markets/&lt;category&gt;/&lt;market-slug&gt;</loc><changefreq>hourly</changefreq><priority>0.7</priority></url>
+
+       Trust / info pages to add when they exist:
+       <url><loc>https://www.oddsmate.ai/about</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+       <url><loc>https://www.oddsmate.ai/faq</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+       <url><loc>https://www.oddsmate.ai/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+       <url><loc>https://www.oddsmate.ai/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+       ============================================================ -->
+
+</urlset>

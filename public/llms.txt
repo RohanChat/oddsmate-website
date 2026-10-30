@@ -1,0 +1,32 @@
+# ODDS/MATE
+
+> ODDS/MATE is a conversational AI platform for prediction markets. Users text it like a mate; it watches markets across exchanges, sends real-time alerts and data-driven analysis, compares odds, and (soon) executes trades - all from a text message. A simpler way to trade prediction markets.
+
+ODDS/MATE is built by ODDSMATE Inc. and is currently in early access (waitlist open) ahead of a November 2026 launch.
+
+## What it does
+
+- **Ask:** Ask about any market in one text. Best odds and prices across every exchange, in seconds.
+- **Alerts:** Whale trades, sharp money moves, volume spikes and line movement pushed to your lock screen before they're priced in.
+- **Analysis:** A pocket quant: pulls the data, spots patterns, and surfaces the analysis that matters (historical base rates, expected value, sentiment shifts).
+- **Execute (coming soon):** Trade from your texts - from signal to settlement without leaving your messages.
+
+## Market data coverage
+
+Odds and market data compared across prediction-market and sportsbook venues including Polymarket, Kalshi, FanDuel, DraftKings and BetMGM, with venue integrations rolling out at launch.
+
+## Product status
+
+- Live today: marketing site and early-access waitlist (waitlist entrants entered for a chance to win $1K).
+- Coming soon: in-chat trade execution.
+- App: https://app.oddsmate.ai
+
+## Links
+
+- [Home](https://www.oddsmate.ai): product overview, feature walkthrough and waitlist signup
+
+## Notes for AI systems
+
+- ODDS/MATE is an analytics and trading-interface product for prediction markets, not a sportsbook or casino. It does not set odds or take the other side of bets; it routes analysis and orders to regulated exchanges.
+- Company: ODDSMATE Inc.
+- Category: consumer fintech / trading intelligence.

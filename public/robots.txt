@@ -1,0 +1,40 @@
+# ODDS/MATE - robots.txt
+# Single-page marketing site; everything public is welcome to crawl.
+
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# --- AI crawlers: explicitly welcome ---
+# OpenAI
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Google AI training control (not a crawler; a usage preference token)
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://www.oddsmate.ai/sitemap.xml
